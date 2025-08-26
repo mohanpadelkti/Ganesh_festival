@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ganesh Festival Contributions - Village</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: url('https://png.pngtree.com/png-clipart/20230810/original/pngtree-ganesh-chaturthi-festival-background-with-lord-ganesha-png-image_10696436.png') center top/cover no-repeat, linear-gradient(135deg, #fffbe7 0%, #ffe0b2 100%);
+      margin: 0; padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 750px;
+      margin: 40px auto;
+      background: #fff8e1;
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px #b36b0033;
+      border: 2px solid #ffb300;
+    }
+    h1 {
+      color: #b36b00;
+      text-align: center;
+      font-family: 'Georgia', serif;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    h2 {
+      color: #ff9800;
+      margin-top: 32px;
+    }
+    .ganesh {
+      display: block;
+      margin: 0 auto 16px auto;
+      width: 80px;
+      filter: drop-shadow(0 2px 8px #ffb30088);
+    }
+    .ganesh-large {
+      display: block;
+      margin: 0 auto 24px auto;
+      width: 140px;
+      filter: drop-shadow(0 4px 16px #ffb30088);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      background: #fffde7;
+    }
+    th, td {
+      border: 1px solid #ffe082;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #ffe0b2;
+      color: #b36b00;
+    }
+    .summary {
+      background: #fff3e0;
+      padding: 14px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      border: 1px solid #ffe082;
+      font-size: 1.1em;
+    }
+    .credit { color: green; }
+    .debt { color: red; }
+    .login-box {
+      max-width: 350px;
+      margin: 80px auto 0 auto;
+      background: #fffbe7 url('https://png.pngtree.com/png-clipart/20230810/original/pngtree-ganesh-chaturthi-festival-background-with-lord-ganesha-png-image_10696436.png') center 60px/cover no-repeat;
+      border: 2px solid #ffb300;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #b36b0033;
+      padding: 32px 24px 24px 24px;
+      text-align: center;
+      position: relative;
+      min-height: 420px;
+    }
+    .login-box h2 {
+      color: #b36b00;
+      margin-bottom: 18px;
+    }
+    .login-box input {
+      width: 90%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ffe082;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+    .login-box button {
+      background: #ffb300;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 24px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background 0.2s;
+    }
+    .login-box button:hover {
+      background: #b36b00;
+    }
+    .login-error {
+      color: red;
+      margin-top: 8px;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+  <div id="login-section" class="login-box" style="display:block;">
+    <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+    <h2>M.D Puttur Ganesh Festival</h2>
+    <form id="login-form">
+      <input type="text" id="login-username" placeholder="Username" required><br>
+      <input type="password" id="login-password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+      <div class="login-error" id="login-error"></div>
+    </form>
+    <div style="margin-top:18px;">
+      <span>New user? <a href="#" id="show-signup">Sign up</a></span>
+    </div>
+  </div>
+  <div id="signup-section" class="login-box" style="display:none;">
+    <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+    <h2>Sign Up</h2>
+    <form id="signup-form">
+      <input type="text" id="signup-username" placeholder="Choose Username" required><br>
+      <input type="password" id="signup-password" placeholder="Choose Password" required><br>
+      <button type="submit">Sign Up</button>
+      <div class="login-error" id="signup-error"></div>
+    </form>
+    <div style="margin-top:18px;">
+      <span>Already have an account? <a href="#" id="show-login">Login</a></span>
+    </div>
+  </div>
+  <div class="container" id="main-content" style="display:none;">
+    <button id="logout-btn" style="float:right;background:#ffb300;color:#fff;border:none;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Logout</button>
+    <button id="show-dashboard" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;display:none;">Dashboard</button>
+    <button id="show-events" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Events Live Updates</button>
+    <div style="clear:both;"></div>
+    <div id="dashboard-section">
+      <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+  <h1>Ganesh Festival - Donors & Expenses</h1>
+      <div class="summary" id="summary"></div>
+      <h2>Donors</h2>
+      <form id="donor-form" style="margin-bottom:16px;">
+        <input type="text" id="donor-name" placeholder="Name" required>
+        <input type="number" id="donor-amount" placeholder="Amount" required min="1">
+        <button type="submit">Add Donor</button>
+      </form>
+      <table id="donors-table">
+        <thead>
+          <tr><th>Name</th><th>Amount</th><th>Action</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <h2>Expenses</h2>
+      <form id="expense-form" style="margin-bottom:16px;">
+        <input type="text" id="expense-item" placeholder="Item" required>
+        <input type="text" id="expense-spentby" placeholder="Spent By" required>
+        <input type="number" id="expense-amount" placeholder="Amount" required min="1">
+        <button type="submit">Add Expense</button>
+      </form>
+      <table id="expenses-table">
+        <thead>
+          <tr><th>Item</th><th>Spent By</th><th>Amount</th><th>Action</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="events-section" style="display:none;">
+      <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+      <h1>Events Live Updates</h1>
+      <form id="event-form" style="margin-bottom:16px;">
+        <input type="text" id="event-title" placeholder="Event Title" required>
+        <input type="text" id="event-desc" placeholder="Description" required>
+        <input type="date" id="event-date" required>
+        <input type="time" id="event-time" required>
+        <button type="submit">Add Event Update</button>
+      </form>
+      <ul id="events-list" style="list-style:none;padding:0;"></ul>
+    </div>
+  </div>
+  <script>
+  // Editable data
+  let donors = [];
+  let expenses = [];
+  let events = [];
+    // Navigation between dashboard and events
+    document.getElementById('show-events').onclick = function() {
+      document.getElementById('dashboard-section').style.display = 'none';
+      document.getElementById('events-section').style.display = 'block';
+      document.getElementById('show-events').style.display = 'none';
+      document.getElementById('show-dashboard').style.display = 'inline-block';
+      renderEvents();
+    };
+    document.getElementById('show-dashboard').onclick = function() {
+      document.getElementById('dashboard-section').style.display = 'block';
+      document.getElementById('events-section').style.display = 'none';
+      document.getElementById('show-events').style.display = 'inline-block';
+      document.getElementById('show-dashboard').style.display = 'none';
+    };
+
+    // Add event
+    document.getElementById('event-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const title = document.getElementById('event-title').value.trim();
+      const desc = document.getElementById('event-desc').value.trim();
+      const date = document.getElementById('event-date').value;
+      const time = document.getElementById('event-time').value;
+      if (title && desc && date && time) {
+        events.unshift({ title, desc, date, time });
+        renderEvents();
+        this.reset();
+      }
+    });
+
+    function renderEvents() {
+      const list = document.getElementById('events-list');
+      list.innerHTML = '';
+      events.forEach((ev, i) => {
+        const li = document.createElement('li');
+        li.style.background = '#fffde7';
+        li.style.marginBottom = '12px';
+        li.style.padding = '12px 16px';
+        li.style.borderRadius = '8px';
+        li.style.border = '1px solid #ffe082';
+        li.innerHTML = `<b>${ev.title}</b> <span style='color:#b36b00;font-size:0.95em;'>(${ev.date} ${ev.time})</span><br><span>${ev.desc}</span> <button style='float:right;' onclick='deleteEvent(${i})'>Delete</button>`;
+        list.appendChild(li);
+      });
+    }
+
+    // Delete event
+    function deleteEvent(idx) {
+      events.splice(idx, 1);
+      renderEvents();
+    }
+
+    // In-memory users (default admin)
+    let users = [{ username: 'admin', password: 'ganesh', isAdmin: true }];
+    let currentUser = null;
+
+    // Show/hide login/signup
+    document.getElementById('show-signup').onclick = function() {
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('signup-section').style.display = 'block';
+    };
+    document.getElementById('show-login').onclick = function() {
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+    };
+
+    // Signup
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('signup-username').value.trim();
+      const password = document.getElementById('signup-password').value;
+      if (!username || !password) return;
+      if (users.some(u => u.username === username)) {
+        document.getElementById('signup-error').textContent = 'Username already exists!';
+        return;
+      }
+  users.push({ username, password, isAdmin: false });
+      document.getElementById('signup-error').textContent = '';
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('login-error').textContent = 'Signup successful! Please login.';
+    });
+
+    // Login
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+      const user = users.find(u => u.username === username && u.password === password);
+      if (user) {
+        currentUser = user;
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('signup-section').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        render();
+      } else {
+        document.getElementById('login-error').textContent = 'Invalid username or password!';
+      }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').onclick = function() {
+      currentUser = null;
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('login-form').reset();
+      document.getElementById('login-error').textContent = '';
+    };
+
+    function render() {
+      // Render donors
+      const donorsTable = document.querySelector('#donors-table tbody');
+      donorsTable.innerHTML = '';
+      donors.forEach((d, i) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${d.name}</td><td>₹${d.amount}</td><td><button onclick="deleteDonor(${i})">Delete</button></td>`;
+        donorsTable.appendChild(row);
+      });
+      // Render expenses
+      const expensesTable = document.querySelector('#expenses-table tbody');
+      expensesTable.innerHTML = '';
+      expenses.forEach((e, i) => {
+        if (e.editing) {
+          row = document.createElement('tr');
+          row.innerHTML = `
+            <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
+            <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
+            <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px'></td>
+            <td>
+              <button onclick="saveExpense(${i})">Save</button>
+              <button onclick="cancelEditExpense(${i})">Cancel</button>
+            </td>
+          `;
+        } else {
+          row = document.createElement('tr');
+          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td>₹${e.amount}</td><td><button onclick="editExpense(${i})">Edit</button></td>`;
+        }
+        expensesTable.appendChild(row);
+      });
+      // Calculate totals
+      const totalDonated = donors.reduce((sum, d) => sum + d.amount, 0);
+      const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+      const balance = totalDonated - totalSpent;
+      // Show summary
+      document.getElementById('summary').innerHTML = `
+        <b>Total Donated:</b> ₹${totalDonated} &nbsp; | &nbsp;
+        <b>Total Spent:</b> ₹${totalSpent} &nbsp; | &nbsp;
+        <b>Balance:</b> <span class="${balance >= 0 ? 'credit' : 'debt'}">₹${balance}</span>
+      `;
+    }
+
+    // Delete donor
+    function deleteDonor(idx) {
+      donors.splice(idx, 1);
+      render();
+    }
+
+    // Edit expense
+    function editExpense(idx) {
+      expenses[idx].editing = true;
+      render();
+    }
+    // Save expense
+    function saveExpense(idx) {
+      const item = document.getElementById('edit-item-' + idx).value.trim();
+      const spentBy = document.getElementById('edit-spentby-' + idx).value.trim();
+      const amount = parseInt(document.getElementById('edit-amount-' + idx).value, 10);
+      if (item && spentBy && amount > 0) {
+        expenses[idx] = { item, spentBy, amount };
+        render();
+      }
+    }
+    // Cancel edit expense
+    function cancelEditExpense(idx) {
+      delete expenses[idx].editing;
+      render();
+    }
+
+    // Add donor
+    document.getElementById('donor-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('donor-name').value.trim();
+      const amount = parseInt(document.getElementById('donor-amount').value, 10);
+      if (name && amount > 0) {
+        donors.push({ name, amount });
+        render();
+        this.reset();
+      }
+    });
+    // Add expense
+    document.getElementById('expense-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const item = document.getElementById('expense-item').value.trim();
+      const spentBy = document.getElementById('expense-spentby').value.trim();
+      const amount = parseInt(document.getElementById('expense-amount').value, 10);
+      if (item && spentBy && amount > 0) {
+        expenses.push({ item, spentBy, amount });
+        render();
+        this.reset();
+      }
+    });
+  </script>
+</body>
+</html>
