@@ -190,9 +190,15 @@
   </div>
   <script>
   // Editable data
-  let donors = [];
-  let expenses = [];
-  let events = [];
+  let donors = JSON.parse(localStorage.getItem('donors') || '[]');
+  let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+  let events = JSON.parse(localStorage.getItem('events') || '[]');
+
+  function saveAll() {
+    localStorage.setItem('donors', JSON.stringify(donors));
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    localStorage.setItem('events', JSON.stringify(events));
+  }
     // Navigation between dashboard and events
     document.getElementById('show-events').onclick = function() {
       document.getElementById('dashboard-section').style.display = 'none';
@@ -235,6 +241,7 @@
         li.innerHTML = `<b>${ev.title}</b> <span style='color:#b36b00;font-size:0.95em;'>(${ev.date} ${ev.time})</span><br><span>${ev.desc}</span> <button style='float:right;' onclick='deleteEvent(${i})'>Delete</button>`;
         list.appendChild(li);
       });
+      saveAll();
     }
 
     // Delete event
@@ -300,15 +307,26 @@
       document.getElementById('login-error').textContent = '';
     };
 
-    function render() {
+  function render() {
       // Render donors
       const donorsTable = document.querySelector('#donors-table tbody');
       donorsTable.innerHTML = '';
-      donors.forEach((d, i) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${d.name}</td><td>₹${d.amount}</td><td><button onclick="deleteDonor(${i})">Delete</button></td>`;
-        donorsTable.appendChild(row);
-      });
+        donors.forEach((d, i) => {
+          let row = document.createElement('tr');
+          if (d.editing) {
+            row.innerHTML = `
+              <td><input type='text' value='${d.name}' id='edit-donor-name-${i}' style='width:90px'></td>
+              <td><input type='number' value='${d.amount}' id='edit-donor-amount-${i}' style='width:70px'></td>
+              <td>
+                <button onclick="saveDonor(${i})">Save</button>
+                <button onclick="cancelEditDonor(${i})">Cancel</button>
+              </td>
+            `;
+          } else {
+            row.innerHTML = `<td>${d.name}</td><td>₹${d.amount}</td><td><button onclick="editDonor(${i})">Edit</button> <button onclick="deleteDonor(${i})">Delete</button></td>`;
+          }
+          donorsTable.appendChild(row);
+        });
       // Render expenses
       const expensesTable = document.querySelector('#expenses-table tbody');
       expensesTable.innerHTML = '';
@@ -340,6 +358,7 @@
         <b>Total Spent:</b> ₹${totalSpent} &nbsp; | &nbsp;
         <b>Balance:</b> <span class="${balance >= 0 ? 'credit' : 'debt'}">₹${balance}</span>
       `;
+      saveAll();
     }
 
     // Delete donor
@@ -380,6 +399,25 @@
         this.reset();
       }
     });
+      // Edit donor
+      function editDonor(idx) {
+        donors[idx].editing = true;
+        render();
+      }
+      // Save donor
+      function saveDonor(idx) {
+        const name = document.getElementById('edit-donor-name-' + idx).value.trim();
+        const amount = parseInt(document.getElementById('edit-donor-amount-' + idx).value, 10);
+        if (name && amount > 0) {
+          donors[idx] = { name, amount };
+          render();
+        }
+      }
+      // Cancel edit donor
+      function cancelEditDonor(idx) {
+        delete donors[idx].editing;
+        render();
+      }
     // Add expense
     document.getElementById('expense-form').addEventListener('submit', function(e) {
       e.preventDefault();
