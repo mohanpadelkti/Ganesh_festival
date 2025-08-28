@@ -12,13 +12,31 @@
       min-height: 100vh;
     }
     .container {
-      max-width: 750px;
+      max-width: 1200px;
+      width: 96vw;
+      min-width: 320px;
       margin: 40px auto;
       background: #fff8e1;
-      padding: 28px;
+      padding: 32px 32px 32px 32px;
       border-radius: 12px;
       box-shadow: 0 4px 16px #b36b0033;
       border: 2px solid #ffb300;
+      transition: width 0.3s;
+    }
+    @media (max-width: 1300px) {
+      .container {
+        max-width: 98vw;
+        padding: 16px;
+      }
+    }
+    @media (max-width: 900px) {
+      .container {
+        max-width: 99vw;
+        padding: 8px;
+      }
+      table, th, td {
+        font-size: 0.98em;
+      }
     }
     h1 {
       color: #b36b00;
@@ -114,7 +132,33 @@
   </style>
 </head>
 <body>
-  <div id="login-section" class="login-box" style="display:block;">
+  <div id="login-section" class="login-box" style="display:block;position:relative;">
+    <div class="scroll-blessing-message">
+     Happy VINAYAKA Chaturdhi
+    </div>
+  <style>
+    .scroll-blessing-message {
+      position: absolute;
+      top: -38px;
+      left: 0;
+      width: 100%;
+      font-size: 1.1em;
+      color: #b36b00;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      z-index: 20;
+      text-shadow: 1px 1px 6px #ffe082;
+      background: #fffbe7cc;
+      padding: 6px 0;
+      border-radius: 8px 8px 0 0;
+      animation: scroll-left-right-blessing 18s linear infinite;
+    }
+    @keyframes scroll-left-right-blessing {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+  </style>
     <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
     <h2>M.D puttur village login form for Ganesh festival </h2>
     <form id="login-form">
@@ -331,12 +375,13 @@
       const expensesTable = document.querySelector('#expenses-table tbody');
       expensesTable.innerHTML = '';
       expenses.forEach((e, i) => {
+        let row;
         if (e.editing) {
           row = document.createElement('tr');
           row.innerHTML = `
             <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
             <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
-            <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px'></td>
+            <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px' min='1'></td>
             <td>
               <button onclick="saveExpense(${i})">Save</button>
               <button onclick="cancelEditExpense(${i})">Cancel</button>
@@ -344,7 +389,7 @@
           `;
         } else {
           row = document.createElement('tr');
-          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td>₹${e.amount}</td><td><button onclick="editExpense(${i})">Edit</button></td>`;
+          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td>₹${e.amount}</td><td><button onclick="editExpense(${i})">Edit</button> <button onclick="deleteExpense(${i})">Delete</button></td>`;
         }
         expensesTable.appendChild(row);
       });
@@ -377,8 +422,18 @@
       const item = document.getElementById('edit-item-' + idx).value.trim();
       const spentBy = document.getElementById('edit-spentby-' + idx).value.trim();
       const amount = parseInt(document.getElementById('edit-amount-' + idx).value, 10);
-      if (item && spentBy && amount > 0) {
-        expenses[idx] = { item, spentBy, amount };
+      if (!item || !spentBy || isNaN(amount) || amount < 1) {
+        alert('Please enter valid item, spent by, and amount (>0)');
+        return;
+      }
+      // Update the expense and re-render
+      expenses[idx] = { item, spentBy, amount };
+      render();
+    }
+    // Delete expense
+    function deleteExpense(idx) {
+      if (confirm('Are you sure you want to delete this expense?')) {
+        expenses.splice(idx, 1);
         render();
       }
     }
@@ -433,6 +488,5 @@
   </script>
 </body>
 </html>
-
 
 
