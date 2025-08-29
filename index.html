@@ -75,9 +75,13 @@
     }
     table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       margin-bottom: 24px;
       background: #fffde7;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px #ffe08233;
     }
     th, td {
       border: 1px solid #ffe082;
@@ -87,6 +91,36 @@
     th {
       background: #ffe082;
       color: #e65100;
+      font-weight: bold;
+    }
+    /* Striped rows */
+    tbody tr:nth-child(odd) {
+      background: #fffbe7;
+    }
+    tbody tr:nth-child(even) {
+      background: #fff3b0;
+    }
+    /* Golden pill badge for amounts */
+    .amount-badge {
+      display: inline-block;
+      background: linear-gradient(90deg, #ffe082 0%, #ffd54f 100%);
+      color: #b36b00;
+      font-weight: bold;
+      border-radius: 16px;
+      padding: 2px 12px 2px 8px;
+      font-size: 0.98em;
+      box-shadow: 0 1px 3px #ffe08255;
+      margin-left: 2px;
+      vertical-align: middle;
+    }
+    .amount-badge .fa-indian-rupee-sign {
+      color: #e6a13c;
+      margin-right: 2px;
+      font-size: 0.98em;
+    }
+    /* Action icon buttons spacing */
+    .icon-btn {
+      margin: 0 2px;
     }
     .summary {
       background: #fffde7;
@@ -147,49 +181,148 @@
       box-shadow: 0 1px 3px #ffe08233 inset;
     }
     .login-box button[type="submit"] {
-      background: linear-gradient(90deg, #ff9800 0%, #ffd54f 100%);
+      background: linear-gradient(90deg, #ff9800 0%, #ffb300 100%);
       color: #fff;
       border: none;
-      border-radius: 7px;
-      padding: 10px 0;
-      font-size: 1.08em;
+      border-radius: 18px;
+      padding: 7px 0;
+      font-size: 0.98em;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 8px;
       box-shadow: 0 2px 8px #e6a13c33;
       letter-spacing: 0.5px;
       transition: background 0.2s, box-shadow 0.2s, color 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1), filter 0.18s;
-      max-width: 240px;
+      max-width: 150px;
       width: 100%;
       display: block;
       margin-left: auto;
       margin-right: auto;
     }
-    .login-box button[type="submit"]:hover {
-      background: linear-gradient(90deg, #ffd54f 0%, #ff9800 100%);
-      color: #fffde7;
-      box-shadow: 0 4px 16px #e6a13c55;
-      filter: brightness(1.08) drop-shadow(0 0 8px #ffe082cc);
-      transform: scale(1.06) translateY(-2px);
-    }
-    #logout-btn, #download-report-btn, #download-gallery-btn, #show-dashboard, #show-events, #gallery-upload-form button {
+    #logout-btn, #show-dashboard, #show-events {
       background: linear-gradient(90deg, #ffd54f 0%, #ffb300 100%);
       color: #fff;
       border: none;
-      border-radius: 5px;
-      padding: 8px 24px;
-      font-size: 1em;
+      border-radius: 18px;
+      padding: 7px 18px;
+      font-size: 0.98em;
       cursor: pointer;
-      margin-bottom: 18px;
+      margin-bottom: 10px;
       box-shadow: 0 2px 6px #e6a13c33;
       transition: background 0.2s, box-shadow 0.2s, color 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1), filter 0.18s;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
+    #download-report-btn {
+      background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+      color: #fff;
+      border: none;
+      border-radius: 18px;
+      padding: 7px 18px;
+      font-size: 0.98em;
+      cursor: pointer;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px #43a04733;
+      transition: background 0.2s, box-shadow 0.2s, color 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1), filter 0.18s;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #download-gallery-btn {
+      background: linear-gradient(90deg, #ff9800 0%, #ffb300 100%);
+      color: #fff;
+      border: none;
+      border-radius: 18px;
+      padding: 7px 18px;
+      font-size: 0.98em;
+      cursor: pointer;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px #e6a13c33;
+      transition: background 0.2s, box-shadow 0.2s, color 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1), filter 0.18s;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #gallery-upload-form button {
+      background: linear-gradient(90deg, #ff9800 0%, #ffb300 100%);
+      color: #fff;
+      border: none;
+      border-radius: 18px;
+      padding: 7px 18px;
+      font-size: 0.98em;
+      cursor: pointer;
+      margin-bottom: 6px;
+      box-shadow: 0 2px 6px #e6a13c33;
+      transition: background 0.2s, box-shadow 0.2s, color 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1), filter 0.18s;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .login-box button[type="submit"]:hover,
     #logout-btn:hover, #download-report-btn:hover, #download-gallery-btn:hover, #show-dashboard:hover, #show-events:hover, #gallery-upload-form button:hover {
       background: linear-gradient(90deg, #ffb300 0%, #ffd54f 100%);
       color: #fffde7;
       box-shadow: 0 4px 12px #e6a13c55;
       filter: brightness(1.08) drop-shadow(0 0 8px #ffe082cc);
-      transform: scale(1.06) translateY(-2px);
+      transform: scale(1.08) translateY(-2px);
+    }
+    .icon-btn {
+      background: #fff3b0;
+      color: #e65100;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1em;
+      margin: 0 1px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px #ffe08255;
+      transition: background 0.18s, color 0.18s, transform 0.18s;
+    }
+    .icon-btn.edit-btn {
+      background: #ffe082;
+      color: #e65100;
+    }
+    .icon-btn.delete-btn {
+      background: #ff5252;
+      color: #fff;
+    }
+    .icon-btn.save-btn {
+      background: #43a047;
+      color: #fff;
+    }
+    .icon-btn.cancel-btn {
+      background: #bdbdbd;
+      color: #fff;
+    }
+    .icon-btn:hover {
+      transform: scale(1.13) translateY(-2px);
+      filter: brightness(1.08) drop-shadow(0 0 8px #ffe082cc);
+      z-index: 2;
+    }
+    .icon-btn.edit-btn:hover {
+      background: #ffb300;
+      color: #fff;
+    }
+    .icon-btn.delete-btn:hover {
+      background: #d84315;
+      color: #fff;
+    }
+    .icon-btn.save-btn:hover {
+      background: #388e3c;
+      color: #fff;
+    }
+    .icon-btn.cancel-btn:hover {
+      background: #757575;
+      color: #fff;
     }
     .scroll-blessing-message {
       position: absolute;
@@ -257,10 +390,48 @@
       0% { transform: translateY(120vh) scale(0.95) rotate(0deg); }
       100% { transform: translateY(-10vh) scale(1.05) rotate(-24deg); }
     }
+    .card-section, .dashboard-subcard, .gallery-card {
+      background: #fff;
+      border-radius: 12px !important;
+      box-shadow: 0 2px 16px #e6a13c22, 0 1.5px 6px #ffe08233;
+      border: 1.5px solid #ffe082;
+      padding: 24px 20px 20px 20px;
+      margin-bottom: 18px;
+      min-width: 320px;
+      max-width: 420px;
+      flex: 1 1 340px;
+    }
+    .dashboard-subcard {
+      background: #fff;
+      border-radius: 12px !important;
+      box-shadow: 0 1.5px 8px #ffe08244;
+      border: 1px solid #ffe082;
+      padding: 18px 12px 12px 12px;
+      min-width: 0;
+      margin-bottom: 0;
+    }
+    .gallery-card {
+      background: #fff;
+      border-radius: 12px !important;
+      box-shadow: 0 2px 16px #e6a13c22, 0 1.5px 6px #ffe08233;
+      border: 1.5px solid #ffe082;
+      min-width: 320px;
+      max-width: 400px;
+      flex: 1 1 340px;
+      margin-right: 0;
+    }
+    .main-flex-layout {
+      background: linear-gradient(135deg, #fffbe7 0%, #fff3b0 60%, #ffe082 100%);
+      border-radius: 18px;
+      padding: 18px 0 18px 0;
+    }
   </style>
 </head>
 <body>
-  <div id="session-warning" style="display:none;position:fixed;top:0;left:0;width:100%;background:#ffecb3;color:#b36b00;text-align:center;padding:10px 0;font-size:1.1em;z-index:9999;font-weight:bold;box-shadow:0 2px 8px #b36b0033;"></div>
+    <div id="session-warning" style="display:none;position:fixed;top:0;left:0;width:100%;background:#ffecb3;color:#b36b00;text-align:center;padding:10px 0;font-size:1.1em;z-index:9999;font-weight:bold;box-shadow:0 2px 8px #b36b0033;"></div>
+    <div id="logout-btn-wrapper" style="display:none;position:fixed;top:18px;right:32px;z-index:1001;">
+      <button id="logout-btn">Logout</button>
+    </div>
   <div id="login-section" class="login-box" style="display:block;position:relative;">
     <div class="scroll-blessing-message">
      Happy VINAYAKA Chaturdhi
@@ -308,68 +479,68 @@
     </div>
   </div>
   <div class="container" id="main-content" style="display:none;">
-  <div style="clear:both;"></div>
-  <!-- ...existing dashboard and events sections... -->
-  <div id="gallery-section" style="margin-top:36px;">
-  <h1 class="gallery-heading"><b>Gallery - Images & Videos</b></h1>
-    <form id="gallery-upload-form" style="margin-bottom:18px;">
-  <label class="gallery-upload-label"><b>Upload Images/Videos:</b></label>
-  <input type="file" id="gallery-files" accept="image/*,video/*" multiple required>
-  <button type="submit"><b>Upload</b></button>
-  <span id="gallery-upload-msg" style="color:green;margin-left:12px;"></span>
-    </form>
-  <button id="download-gallery-btn" style="background:#b36b00;color:#fff;border:none;border-radius:5px;padding:8px 24px;font-size:1em;cursor:pointer;margin-bottom:18px;"><b>Download All</b></button>
-    <div id="gallery-grid" style="display:flex;flex-wrap:wrap;gap:18px;"></div>
-  </div>
-  <button id="logout-btn" style="float:right;background:#ffb300;color:#fff;border:none;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Logout</button>
-  <button id="show-dashboard" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;display:none;">Dashboard</button>
-  <button id="show-events" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Events Live Updates</button>
+    <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; justify-content: center;">
+      <div id="gallery-section" style="margin-top:0; min-width:320px; max-width:400px; flex:1 1 340px; background:#fff; border-radius:12px; box-shadow:0 2px 16px #e6a13c22, 0 1.5px 6px #ffe08233; border:1.5px solid #ffe082; padding:24px 20px 20px 20px;">
+        <h1 class="gallery-heading"><b>Gallery - Images & Videos</b></h1>
+        <form id="gallery-upload-form" style="margin-bottom:18px;">
+          <label class="gallery-upload-label"><b>Upload Images/Videos:</b></label>
+          <input type="file" id="gallery-files" accept="image/*,video/*" multiple required>
+          <button type="submit"><i class="fa fa-upload"></i> <b>Upload</b></button>
+          <span id="gallery-upload-msg" style="color:green;margin-left:12px;"></span>
+        </form>
+        <button id="download-gallery-btn"><i class="fa fa-download"></i> <b>Download All</b></button>
+        <div id="gallery-grid" style="display:flex;flex-wrap:wrap;gap:18px;"></div>
+      </div>
+      <div style="flex:2 1 500px; min-width:340px; max-width:700px; background:#fff; border-radius:12px; box-shadow:0 2px 16px #e6a13c22, 0 1.5px 6px #ffe08233; border:1.5px solid #ffe082; padding:24px 20px 20px 20px; margin-left:0;">
+        <div id="dashboard-section">
+          <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+          <h1>Ganesh Festival - Donors & Expenses</h1>
+          <div class="summary" id="summary"></div>
+          <button id="download-report-btn"><i class="fa fa-file-pdf"></i> Download PDF Report</button>
+          <h2>Donors</h2>
+          <form id="donor-form" style="margin-bottom:16px;display:none;">
+            <input type="text" id="donor-name" placeholder="Name" required>
+            <input type="number" id="donor-amount" placeholder="Amount" required min="1">
+            <button type="submit">Add Donor</button>
+          </form>
+          <table id="donors-table">
+            <thead>
+              <tr><th>Name</th><th>Amount</th><th>Action</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <h2>Expenses</h2>
+          <form id="expense-form" style="margin-bottom:16px;display:none;">
+            <input type="text" id="expense-item" placeholder="Item" required>
+            <input type="text" id="expense-spentby" placeholder="Spent By" required>
+            <input type="number" id="expense-amount" placeholder="Amount" required min="1">
+            <button type="submit">Add Expense</button>
+          </form>
+          <table id="expenses-table">
+            <thead>
+              <tr><th>Item</th><th>Spent By</th><th>Amount</th><th>Action</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div id="events-section" style="display:none;">
+          <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+          <h1>Events Live Updates</h1>
+          <form id="event-form" style="margin-bottom:16px;display:none;">
+            <input type="text" id="event-title" placeholder="Event Title" required>
+            <input type="text" id="event-desc" placeholder="Description" required>
+            <input type="date" id="event-date" required>
+            <input type="time" id="event-time" required>
+            <button type="submit">Add Event Update</button>
+          </form>
+          <ul id="events-list" style="list-style:none;padding:0;"></ul>
+        </div>
+      </div>
+    </div>
+    <button id="show-dashboard" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;display:none;">Dashboard</button>
+    <button id="show-events" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Events Live Updates</button>
     <div style="clear:both;"></div>
-    <div id="dashboard-section">
-      <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
-  <h1>Ganesh Festival - Donors & Expenses</h1>
-  <div class="summary" id="summary"></div>
-  <button id="download-report-btn" style="background:#b36b00;color:#fff;border:none;border-radius:5px;padding:8px 24px;font-size:1em;cursor:pointer;margin-bottom:18px;">Download PDF Report</button>
-      <h2>Donors</h2>
-      <form id="donor-form" style="margin-bottom:16px;display:none;">
-        <input type="text" id="donor-name" placeholder="Name" required>
-        <input type="number" id="donor-amount" placeholder="Amount" required min="1">
-        <button type="submit">Add Donor</button>
-      </form>
-      <table id="donors-table">
-        <thead>
-          <tr><th>Name</th><th>Amount</th><th>Action</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <h2>Expenses</h2>
-      <form id="expense-form" style="margin-bottom:16px;display:none;">
-        <input type="text" id="expense-item" placeholder="Item" required>
-        <input type="text" id="expense-spentby" placeholder="Spent By" required>
-        <input type="number" id="expense-amount" placeholder="Amount" required min="1">
-        <button type="submit">Add Expense</button>
-      </form>
-      <table id="expenses-table">
-        <thead>
-          <tr><th>Item</th><th>Spent By</th><th>Amount</th><th>Action</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div id="events-section" style="display:none;">
-      <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
-      <h1>Events Live Updates</h1>
-      <form id="event-form" style="margin-bottom:16px;display:none;">
-        <input type="text" id="event-title" placeholder="Event Title" required>
-        <input type="text" id="event-desc" placeholder="Description" required>
-        <input type="date" id="event-date" required>
-        <input type="time" id="event-time" required>
-        <button type="submit">Add Event Update</button>
-      </form>
-      <ul id="events-list" style="list-style:none;padding:0;"></ul>
-    </div>
-  </div>
-  <div class="floating-bg-anim">
+    <div class="floating-bg-anim">
       <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:8vw; animation-delay:0s; animation-duration:16s;">
       <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:70vw; animation-delay:3s; animation-duration:19s;">
       <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:40vw; animation-delay:7s; animation-duration:17s;">
@@ -419,17 +590,11 @@
           wrapper.appendChild(el);
           // Delete button
           let delBtn = document.createElement('button');
-          delBtn.textContent = 'Delete';
+          delBtn.innerHTML = '<i class="fa fa-trash"></i>';
+          delBtn.className = 'icon-btn delete-btn';
           delBtn.style.position = 'absolute';
           delBtn.style.top = '4px';
           delBtn.style.right = '4px';
-          delBtn.style.background = '#ff5252';
-          delBtn.style.color = '#fff';
-          delBtn.style.border = 'none';
-          delBtn.style.borderRadius = '4px';
-          delBtn.style.padding = '2px 8px';
-          delBtn.style.fontSize = '0.95em';
-          delBtn.style.cursor = 'pointer';
           delBtn.onclick = function() {
             if (confirm('Delete this item from gallery?')) {
               galleryItems.splice(i, 1);
@@ -795,7 +960,8 @@
         document.getElementById('signup-section').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
         render();
-  startSessionTimeout();
+        startSessionTimeout();
+        updateLogoutBtnVisibility();
       } else {
         document.getElementById('login-error').textContent = 'Invalid username or password!';
       }
@@ -810,10 +976,19 @@
       document.getElementById('login-section').style.display = 'block';
       document.getElementById('login-form').reset();
       document.getElementById('login-error').textContent = 'Logout successfully!';
-  clearSessionTimeout();
+      clearSessionTimeout();
+      updateLogoutBtnVisibility();
     };
 
-  function render() {
+    // Show/hide logout button at top right
+    function updateLogoutBtnVisibility() {
+      document.getElementById('logout-btn-wrapper').style.display = (currentUser ? 'block' : 'none');
+    }
+
+    // On page load, hide logout button
+    updateLogoutBtnVisibility();
+
+    function render() {
       // Permissions: admin can edit, normal user is read-only
       const isAdmin = currentUser && currentUser.isAdmin;
       // Show/hide forms
@@ -831,14 +1006,14 @@
             <td><input type='text' value='${d.name}' id='edit-donor-name-${i}' style='width:90px'></td>
             <td><input type='number' value='${d.amount}' id='edit-donor-amount-${i}' style='width:70px'></td>
             <td>
-              <button onclick="saveDonor(${i})">Save</button>
-              <button onclick="cancelEditDonor(${i})">Cancel</button>
+              <button class="icon-btn save-btn" onclick="saveDonor(${i})"><i class="fa fa-check"></i></button>
+              <button class="icon-btn cancel-btn" onclick="cancelEditDonor(${i})"><i class="fa fa-times"></i></button>
             </td>
           `;
         } else if (isAdmin) {
-          row.innerHTML = `<td>${d.name}</td><td>₹${d.amount}</td><td><button onclick="editDonor(${i})">Edit</button> <button onclick="deleteDonor(${i})">Delete</button></td>`;
+          row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editDonor(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteDonor(${i})"><i class="fa fa-trash"></i></button></td>`;
         } else {
-          row.innerHTML = `<td>${d.name}</td><td>₹${d.amount}</td><td>-</td>`;
+          row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td><td>-</td>`;
         }
         donorsTable.appendChild(row);
       });
@@ -854,16 +1029,16 @@
             <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
             <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px' min='1'></td>
             <td>
-              <button onclick="saveExpense(${i})">Save</button>
-              <button onclick="cancelEditExpense(${i})">Cancel</button>
+              <button class="icon-btn save-btn" onclick="saveExpense(${i})"><i class="fa fa-check"></i></button>
+              <button class="icon-btn cancel-btn" onclick="cancelEditExpense(${i})"><i class="fa fa-times"></i></button>
             </td>
           `;
         } else if (isAdmin) {
           row = document.createElement('tr');
-          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td>₹${e.amount}</td><td><button onclick="editExpense(${i})">Edit</button> <button onclick="deleteExpense(${i})">Delete</button></td>`;
+          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editExpense(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${i})"><i class="fa fa-trash"></i></button></td>`;
         } else {
           row = document.createElement('tr');
-          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td>₹${e.amount}</td><td>-</td>`;
+          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>-</td>`;
         }
         expensesTable.appendChild(row);
       });
