@@ -191,9 +191,9 @@
     </div>
   </div>
   <div class="container" id="main-content" style="display:none;">
-    <button id="logout-btn" style="float:right;background:#ffb300;color:#fff;border:none;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Logout</button>
-    <button id="show-dashboard" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;display:none;">Dashboard</button>
-    <button id="show-events" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Events Live Updates</button>
+  <button id="logout-btn" style="float:right;background:#ffb300;color:#fff;border:none;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Logout</button>
+  <button id="show-dashboard" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;display:none;">Dashboard</button>
+  <button id="show-events" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Events Live Updates</button>
     <div style="clear:both;"></div>
     <div id="dashboard-section">
       <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
@@ -201,7 +201,7 @@
   <div class="summary" id="summary"></div>
   <button id="download-report-btn" style="background:#b36b00;color:#fff;border:none;border-radius:5px;padding:8px 24px;font-size:1em;cursor:pointer;margin-bottom:18px;">Download PDF Report</button>
       <h2>Donors</h2>
-      <form id="donor-form" style="margin-bottom:16px;">
+      <form id="donor-form" style="margin-bottom:16px;display:none;">
         <input type="text" id="donor-name" placeholder="Name" required>
         <input type="number" id="donor-amount" placeholder="Amount" required min="1">
         <button type="submit">Add Donor</button>
@@ -213,7 +213,7 @@
         <tbody></tbody>
       </table>
       <h2>Expenses</h2>
-      <form id="expense-form" style="margin-bottom:16px;">
+      <form id="expense-form" style="margin-bottom:16px;display:none;">
         <input type="text" id="expense-item" placeholder="Item" required>
         <input type="text" id="expense-spentby" placeholder="Spent By" required>
         <input type="number" id="expense-amount" placeholder="Amount" required min="1">
@@ -229,7 +229,7 @@
     <div id="events-section" style="display:none;">
       <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
       <h1>Events Live Updates</h1>
-      <form id="event-form" style="margin-bottom:16px;">
+      <form id="event-form" style="margin-bottom:16px;display:none;">
         <input type="text" id="event-title" placeholder="Event Title" required>
         <input type="text" id="event-desc" placeholder="Description" required>
         <input type="date" id="event-date" required>
@@ -450,31 +450,40 @@
     };
 
   function render() {
+      // Permissions: admin can edit, normal user is read-only
+      const isAdmin = currentUser && currentUser.isAdmin;
+      // Show/hide forms
+      document.getElementById('donor-form').style.display = isAdmin ? 'block' : 'none';
+      document.getElementById('expense-form').style.display = isAdmin ? 'block' : 'none';
+      document.getElementById('event-form').style.display = isAdmin ? 'block' : 'none';
+
       // Render donors
       const donorsTable = document.querySelector('#donors-table tbody');
       donorsTable.innerHTML = '';
-        donors.forEach((d, i) => {
-          let row = document.createElement('tr');
-          if (d.editing) {
-            row.innerHTML = `
-              <td><input type='text' value='${d.name}' id='edit-donor-name-${i}' style='width:90px'></td>
-              <td><input type='number' value='${d.amount}' id='edit-donor-amount-${i}' style='width:70px'></td>
-              <td>
-                <button onclick="saveDonor(${i})">Save</button>
-                <button onclick="cancelEditDonor(${i})">Cancel</button>
-              </td>
-            `;
-          } else {
-            row.innerHTML = `<td>${d.name}</td><td>₹${d.amount}</td><td><button onclick="editDonor(${i})">Edit</button> <button onclick="deleteDonor(${i})">Delete</button></td>`;
-          }
-          donorsTable.appendChild(row);
-        });
+      donors.forEach((d, i) => {
+        let row = document.createElement('tr');
+        if (isAdmin && d.editing) {
+          row.innerHTML = `
+            <td><input type='text' value='${d.name}' id='edit-donor-name-${i}' style='width:90px'></td>
+            <td><input type='number' value='${d.amount}' id='edit-donor-amount-${i}' style='width:70px'></td>
+            <td>
+              <button onclick="saveDonor(${i})">Save</button>
+              <button onclick="cancelEditDonor(${i})">Cancel</button>
+            </td>
+          `;
+        } else if (isAdmin) {
+          row.innerHTML = `<td>${d.name}</td><td>₹${d.amount}</td><td><button onclick="editDonor(${i})">Edit</button> <button onclick="deleteDonor(${i})">Delete</button></td>`;
+        } else {
+          row.innerHTML = `<td>${d.name}</td><td>₹${d.amount}</td><td>-</td>`;
+        }
+        donorsTable.appendChild(row);
+      });
       // Render expenses
       const expensesTable = document.querySelector('#expenses-table tbody');
       expensesTable.innerHTML = '';
       expenses.forEach((e, i) => {
         let row;
-        if (e.editing) {
+        if (isAdmin && e.editing) {
           row = document.createElement('tr');
           row.innerHTML = `
             <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
@@ -485,9 +494,12 @@
               <button onclick="cancelEditExpense(${i})">Cancel</button>
             </td>
           `;
-        } else {
+        } else if (isAdmin) {
           row = document.createElement('tr');
           row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td>₹${e.amount}</td><td><button onclick="editExpense(${i})">Edit</button> <button onclick="deleteExpense(${i})">Delete</button></td>`;
+        } else {
+          row = document.createElement('tr');
+          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td>₹${e.amount}</td><td>-</td>`;
         }
         expensesTable.appendChild(row);
       });
