@@ -132,6 +132,7 @@
   </style>
 </head>
 <body>
+  <div id="session-warning" style="display:none;position:fixed;top:0;left:0;width:100%;background:#ffecb3;color:#b36b00;text-align:center;padding:10px 0;font-size:1.1em;z-index:9999;font-weight:bold;box-shadow:0 2px 8px #b36b0033;"></div>
   <div id="login-section" class="login-box" style="display:block;position:relative;">
     <div class="scroll-blessing-message">
      Happy VINAYAKA Chaturdhi
@@ -242,6 +243,101 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <script>
+    // --- Simple Routing for /login and /signup ---
+    function showLoginSection(pushState = true) {
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+      if (pushState) history.pushState({page: 'login'}, '', '/login');
+    }
+    function showSignupSection(pushState = true) {
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('signup-section').style.display = 'block';
+      if (pushState) history.pushState({page: 'signup'}, '', '/signup');
+    }
+    window.addEventListener('popstate', function(e) {
+      if (location.pathname === '/signup') {
+        showSignupSection(false);
+      } else {
+        showLoginSection(false);
+      }
+    });
+    // On page load, show correct section (ignore trailing slash or hash)
+    if (location.pathname.replace(/\/$/, '') === '/signup') {
+      showSignupSection(false);
+    } else {
+      showLoginSection(false);
+    }
+    // --- Session Timeout Logic ---
+    let sessionTimeoutId = null;
+    let sessionWarningId = null;
+    let sessionCountdown = 0;
+  const SESSION_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
+    const SESSION_WARNING_MS = 30 * 1000; // 30 seconds before timeout
+
+    function startSessionTimeout() {
+      clearSessionTimeout();
+      sessionCountdown = Math.floor(SESSION_TIMEOUT_MS / 1000);
+      // Start countdown display
+      sessionWarningId = setInterval(() => {
+        if (currentUser && sessionCountdown > 0) {
+          sessionCountdown--;
+          if (sessionCountdown <= 30) {
+            showSessionWarning(sessionCountdown);
+            if (sessionCountdown === 30) {
+              // Alert user 30 seconds before logout
+              alert('Session will expire in 30 seconds!');
+            }
+          } else {
+            hideSessionWarning();
+          }
+        }
+      }, 1000);
+      // Set actual timeout
+      sessionTimeoutId = setTimeout(() => {
+        handleSessionTimeout();
+      }, SESSION_TIMEOUT_MS);
+    }
+
+    function clearSessionTimeout() {
+      if (sessionTimeoutId) {
+        clearTimeout(sessionTimeoutId);
+        sessionTimeoutId = null;
+      }
+      if (sessionWarningId) {
+        clearInterval(sessionWarningId);
+        sessionWarningId = null;
+      }
+      hideSessionWarning();
+    }
+
+    function handleSessionTimeout() {
+      currentUser = null;
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('login-form').reset();
+      document.getElementById('login-error').textContent = 'Session timed out. Please login again.';
+      hideSessionWarning();
+    }
+
+    function showSessionWarning(secondsLeft) {
+      const bar = document.getElementById('session-warning');
+      bar.style.display = 'block';
+      bar.textContent = `Session will close in ${secondsLeft} second${secondsLeft!==1?'s':''}. Please save your work.`;
+    }
+    function hideSessionWarning() {
+      const bar = document.getElementById('session-warning');
+      bar.style.display = 'none';
+      bar.textContent = '';
+    }
+
+    // Reset session timer on user activity
+    function resetSessionOnActivity() {
+      if (currentUser) startSessionTimeout();
+    }
+    ['click','keydown','mousemove','scroll','touchstart'].forEach(evt => {
+      window.addEventListener(evt, resetSessionOnActivity, true);
+    });
     // Download PDF Report (tabular format)
     document.getElementById('download-report-btn').onclick = function() {
       const { jsPDF } = window.jspdf;
@@ -377,12 +473,10 @@
 
     // Show/hide login/signup
     document.getElementById('show-signup').onclick = function() {
-      document.getElementById('login-section').style.display = 'none';
-      document.getElementById('signup-section').style.display = 'block';
+  showSignupSection();
     };
     document.getElementById('show-login').onclick = function() {
-      document.getElementById('signup-section').style.display = 'none';
-      document.getElementById('login-section').style.display = 'block';
+  showLoginSection();
     };
 
     // Signup (no OTP, mobile optional)
@@ -433,6 +527,7 @@
         document.getElementById('signup-section').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
         render();
+  startSessionTimeout();
       } else {
         document.getElementById('login-error').textContent = 'Invalid username or password!';
       }
@@ -447,6 +542,7 @@
       document.getElementById('login-section').style.display = 'block';
       document.getElementById('login-form').reset();
       document.getElementById('login-error').textContent = 'Logout successfully!';
+  clearSessionTimeout();
     };
 
   function render() {
@@ -602,4 +698,3 @@
     <div>Developed by Mohanbabu Padileti</div>
   </footer>
 </html>
-
