@@ -175,16 +175,16 @@
     <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
     <h2>Sign Up</h2>
     <form id="signup-form">
-      <label for="signup-username" style="float:left;width:100%;text-align:left;margin-bottom:2px;">Username</label>
-      <input type="text" id="signup-username" placeholder="Username" required><br>
-      <label for="signup-password" style="float:left;width:100%;text-align:left;margin-bottom:2px;">Create Password</label>
-      <input type="password" id="signup-password" placeholder="Create password" required><br>
-      <label for="signup-confirm-password" style="float:left;width:100%;text-align:left;margin-bottom:2px;">Set Password</label>
-      <input type="password" id="signup-confirm-password" placeholder="Set password" required><br>
-      <label for="signup-mobno" style="float:left;width:100%;text-align:left;margin-bottom:2px;">Mobile Number (optional)</label>
-      <input type="text" id="signup-mobno" placeholder="Mobile number" pattern="[0-9]{10}" maxlength="10" style="width:100%;margin-bottom:8px;">
-      <button type="submit">Create Account</button>
-      <div class="login-error" id="signup-error"></div>
+  <label for="signup-username" style="float:left;width:100%;text-align:left;margin-bottom:2px;">Username <span style="color:red">*</span></label>
+  <input type="text" id="signup-username" placeholder="Username" required><br>
+  <label for="signup-password" style="float:left;width:100%;text-align:left;margin-bottom:2px;">Create Password <span style="color:red">*</span></label>
+  <input type="password" id="signup-password" placeholder="Create password" required><br>
+  <label for="signup-confirm-password" style="float:left;width:100%;text-align:left;margin-bottom:2px;">Confirm Password <span style="color:red">*</span></label>
+  <input type="password" id="signup-confirm-password" placeholder="Confirm password" required><br>
+  <label for="signup-mobno" style="float:left;width:100%;text-align:left;margin-bottom:2px;">Mobile Number (optional)</label>
+  <input type="text" id="signup-mobno" placeholder="Mobile number" pattern="[0-9]{10}" maxlength="10" style="width:100%;margin-bottom:8px;">
+  <button type="submit">Create Account</button>
+  <div class="login-error" id="signup-error"></div>
     </form>
     <div style="margin-top:18px;">
       <span>Already have an account? <a href="#" id="show-login">Login</a></span>
@@ -385,7 +385,7 @@
       document.getElementById('login-section').style.display = 'block';
     };
 
-    // Signup
+    // Signup (no OTP, mobile optional)
     document.getElementById('signup-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const username = document.getElementById('signup-username').value.trim();
@@ -602,5 +602,4 @@
     <div>Developed by Mohanbabu Padileti</div>
   </footer>
 </html>
-
 
