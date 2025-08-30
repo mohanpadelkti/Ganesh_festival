@@ -939,7 +939,8 @@
         username,
         password,
         mobno: mobno ? mobno : undefined,
-        isAdmin: false
+        isAdmin: false,
+        isNewUser: true // Mark as new user
       });
       document.getElementById('signup-error').textContent = '';
       document.getElementById('signup-section').style.display = 'none';
@@ -956,6 +957,8 @@
       const user = users.find(u => u.username === username && u.password === password);
       if (user) {
         currentUser = user;
+        // If new user, remove isNewUser after first login
+        if (currentUser.isNewUser) delete currentUser.isNewUser;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('signup-section').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
@@ -968,37 +971,25 @@
     });
 
 
-    // Logout
-    document.getElementById('logout-btn').onclick = function() {
-      currentUser = null;
-      document.getElementById('main-content').style.display = 'none';
-      document.getElementById('signup-section').style.display = 'none';
-      document.getElementById('login-section').style.display = 'block';
-      document.getElementById('login-form').reset();
-      document.getElementById('login-error').textContent = 'Logout successfully!';
-      clearSessionTimeout();
-      updateLogoutBtnVisibility();
-    };
-
-    // Show/hide logout button at top right
-    function updateLogoutBtnVisibility() {
-      document.getElementById('logout-btn-wrapper').style.display = (currentUser ? 'block' : 'none');
-    }
-
-    // On page load, hide logout button
-    updateLogoutBtnVisibility();
-
     function render() {
       // Permissions: admin can edit, normal user is read-only
       const isAdmin = currentUser && currentUser.isAdmin;
+      const isNewUser = currentUser && currentUser.isNewUser;
       // Show/hide forms
       document.getElementById('donor-form').style.display = isAdmin ? 'block' : 'none';
       document.getElementById('expense-form').style.display = isAdmin ? 'block' : 'none';
       document.getElementById('event-form').style.display = isAdmin ? 'block' : 'none';
 
       // Render donors
-      const donorsTable = document.querySelector('#donors-table tbody');
-      donorsTable.innerHTML = '';
+      const donorsTable = document.querySelector('#donors-table thead tr');
+      const donorsTbody = document.querySelector('#donors-table tbody');
+      donorsTbody.innerHTML = '';
+      // Set table header for admin/normal user
+      if (isAdmin) {
+        donorsTable.innerHTML = '<th>Name</th><th>Amount</th><th>Action</th>';
+      } else {
+        donorsTable.innerHTML = '<th>Name</th><th>Amount</th>';
+      }
       donors.forEach((d, i) => {
         let row = document.createElement('tr');
         if (isAdmin && d.editing) {
@@ -1013,13 +1004,20 @@
         } else if (isAdmin) {
           row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editDonor(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteDonor(${i})"><i class="fa fa-trash"></i></button></td>`;
         } else {
-          row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td><td>-</td>`;
+          row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td>`;
         }
-        donorsTable.appendChild(row);
+        donorsTbody.appendChild(row);
       });
       // Render expenses
-      const expensesTable = document.querySelector('#expenses-table tbody');
-      expensesTable.innerHTML = '';
+      const expensesTable = document.querySelector('#expenses-table thead tr');
+      const expensesTbody = document.querySelector('#expenses-table tbody');
+      expensesTbody.innerHTML = '';
+      // Set table header for admin/normal user
+      if (isAdmin) {
+        expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th><th>Action</th>';
+      } else {
+        expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th>';
+      }
       expenses.forEach((e, i) => {
         let row;
         if (isAdmin && e.editing) {
@@ -1038,9 +1036,9 @@
           row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editExpense(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${i})"><i class="fa fa-trash"></i></button></td>`;
         } else {
           row = document.createElement('tr');
-          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>-</td>`;
+          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td>`;
         }
-        expensesTable.appendChild(row);
+        expensesTbody.appendChild(row);
       });
       // Calculate totals
       const totalDonated = donors.reduce((sum, d) => sum + d.amount, 0);
@@ -1134,8 +1132,24 @@
         this.reset();
       }
     });
+    // --- Shared Data Sync Logic ---
+    // Use localStorage events to sync donors, expenses, and events across all tabs/users
+window.addEventListener('storage', function(e) {
+  if (e.key === 'donors') {
+    donors = JSON.parse(localStorage.getItem('donors') || '[]');
+    if (document.getElementById('main-content').style.display !== 'none') render();
+  } else if (e.key === 'expenses') {
+    expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+    if (document.getElementById('main-content').style.display !== 'none') render();
+  } else if (e.key === 'events') {
+    events = JSON.parse(localStorage.getItem('events') || '[]');
+    if (document.getElementById('main-content').style.display !== 'none') render();
+  } else if (e.key === 'galleryItems') {
+    galleryItems = JSON.parse(localStorage.getItem('galleryItems') || '[]');
+    renderGallery();
+  }
+});
   </script>
-</body>
   <footer style="text-align:center;margin:32px 0 12px 0;font-size:1em;color:#b36b00;opacity:0.92;letter-spacing:0.2px;">
     <div style="margin-bottom:4px;">
       &copy; 2025 M.D Puttur Village
@@ -1143,4 +1157,5 @@
       Developed by Mohanbabu Padileti <span style="color:#e65100;font-size:1.1em;vertical-align:middle;">&#10084;&#65039;</span>
     </div>
   </footer>
+</body>
 </html>
