@@ -1051,6 +1051,7 @@
         <b>Balance:</b> <span class="${balance >= 0 ? 'credit' : 'debt'}">₹${balance}</span>
       `;
       saveAll();
+      renderLogoutBtnInMain();
     }
 
     // Delete donor
@@ -1149,6 +1150,248 @@ window.addEventListener('storage', function(e) {
     renderGallery();
   }
 });
+    // Add logout button to dashboard/events area for all users
+    function renderLogoutBtnInMain() {
+      let dashboardSection = document.getElementById('dashboard-section');
+      let eventsSection = document.getElementById('events-section');
+      // Remove any existing logout buttons
+      let oldBtns = document.querySelectorAll('#logout-btn-main');
+      oldBtns.forEach(btn => btn.remove());
+      if (!currentUser) return;
+      // Create logout button
+      function handleLogout() {
+        currentUser = null;
+        document.getElementById('main-content').style.display = 'none';
+        document.getElementById('signup-section').style.display = 'none';
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('login-form').reset();
+        document.getElementById('login-error').textContent = 'Logout successfully!';
+        clearSessionTimeout();
+        updateLogoutBtnVisibility();
+        renderLogoutBtnInMain();
+      }
+      let btn1 = document.createElement('button');
+      btn1.id = 'logout-btn-main';
+      btn1.textContent = 'Logout';
+      btn1.style.cssText = 'background:linear-gradient(90deg,#ffd54f 0%,#ffb300 100%);color:#fff;border:none;border-radius:18px;padding:7px 18px;font-size:0.98em;cursor:pointer;margin:0 0 18px 0;box-shadow:0 2px 6px #e6a13c33;transition:background 0.2s,box-shadow 0.2s,color 0.2s,transform 0.18s cubic-bezier(.4,2,.6,1),filter 0.18s;font-weight:bold;display:block;float:right;z-index:1002;';
+      btn1.onclick = handleLogout;
+      let btn2 = btn1.cloneNode(true);
+      btn2.onclick = handleLogout;
+      // Add to dashboard and events section
+      if (dashboardSection) dashboardSection.insertBefore(btn1, dashboardSection.firstChild);
+      if (eventsSection) eventsSection.insertBefore(btn2, eventsSection.firstChild);
+    }
+    // Call in render
+    function render() {
+      // Permissions: admin can edit, normal user is read-only
+      const isAdmin = currentUser && currentUser.isAdmin;
+      const isNewUser = currentUser && currentUser.isNewUser;
+      // Show/hide forms
+      document.getElementById('donor-form').style.display = isAdmin ? 'block' : 'none';
+      document.getElementById('expense-form').style.display = isAdmin ? 'block' : 'none';
+      document.getElementById('event-form').style.display = isAdmin ? 'block' : 'none';
+
+      // Render donors
+      const donorsTable = document.querySelector('#donors-table thead tr');
+      const donorsTbody = document.querySelector('#donors-table tbody');
+      donorsTbody.innerHTML = '';
+      // Set table header for admin/normal user
+      if (isAdmin) {
+        donorsTable.innerHTML = '<th>Name</th><th>Amount</th><th>Action</th>';
+      } else {
+        donorsTable.innerHTML = '<th>Name</th><th>Amount</th>';
+      }
+      donors.forEach((d, i) => {
+        let row = document.createElement('tr');
+        if (isAdmin && d.editing) {
+          row.innerHTML = `
+            <td><input type='text' value='${d.name}' id='edit-donor-name-${i}' style='width:90px'></td>
+            <td><input type='number' value='${d.amount}' id='edit-donor-amount-${i}' style='width:70px'></td>
+            <td>
+              <button class="icon-btn save-btn" onclick="saveDonor(${i})"><i class="fa fa-check"></i></button>
+              <button class="icon-btn cancel-btn" onclick="cancelEditDonor(${i})"><i class="fa fa-times"></i></button>
+            </td>
+          `;
+        } else if (isAdmin) {
+          row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editDonor(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteDonor(${i})"><i class="fa fa-trash"></i></button></td>`;
+        } else {
+          row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td>`;
+        }
+        donorsTbody.appendChild(row);
+      });
+      // Render expenses
+      const expensesTable = document.querySelector('#expenses-table thead tr');
+      const expensesTbody = document.querySelector('#expenses-table tbody');
+      expensesTbody.innerHTML = '';
+      // Set table header for admin/normal user
+      if (isAdmin) {
+        expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th><th>Action</th>';
+      } else {
+        expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th>';
+      }
+      expenses.forEach((e, i) => {
+        let row;
+        if (isAdmin && e.editing) {
+          row = document.createElement('tr');
+          row.innerHTML = `
+            <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
+            <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
+            <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px' min='1'></td>
+            <td>
+              <button class="icon-btn save-btn" onclick="saveExpense(${i})"><i class="fa fa-check"></i></button>
+              <button class="icon-btn cancel-btn" onclick="cancelEditExpense(${i})"><i class="fa fa-times"></i></button>
+            </td>
+          `;
+        } else if (isAdmin) {
+          row = document.createElement('tr');
+          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editExpense(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${i})"><i class="fa fa-trash"></i></button></td>`;
+        } else {
+          row = document.createElement('tr');
+          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td>`;
+        }
+        expensesTbody.appendChild(row);
+      });
+      // Calculate totals
+      const totalDonated = donors.reduce((sum, d) => sum + d.amount, 0);
+      const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+      const balance = totalDonated - totalSpent;
+      // Show summary
+      document.getElementById('summary').innerHTML = `
+        <b>Total Donated:</b> ₹${totalDonated} &nbsp; | &nbsp;
+        <b>Total Spent:</b> ₹${totalSpent} &nbsp; | &nbsp;
+        <b>Balance:</b> <span class="${balance >= 0 ? 'credit' : 'debt'}">₹${balance}</span>
+      `;
+      saveAll();
+      renderLogoutBtnInMain();
+    }
+
+    // Delete donor
+    function deleteDonor(idx) {
+      donors.splice(idx, 1);
+      render();
+    }
+
+    // Edit expense
+    function editExpense(idx) {
+      expenses[idx].editing = true;
+      render();
+    }
+    // Save expense
+    function saveExpense(idx) {
+      const item = document.getElementById('edit-item-' + idx).value.trim();
+      const spentBy = document.getElementById('edit-spentby-' + idx).value.trim();
+      const amount = parseInt(document.getElementById('edit-amount-' + idx).value, 10);
+      if (!item || !spentBy || isNaN(amount) || amount < 1) {
+        alert('Please enter valid item, spent by, and amount (>0)');
+        return;
+      }
+      // Update the expense and re-render
+      expenses[idx] = { item, spentBy, amount };
+      render();
+    }
+    // Delete expense
+    function deleteExpense(idx) {
+      if (confirm('Are you sure you want to delete this expense?')) {
+        expenses.splice(idx, 1);
+        render();
+      }
+    }
+    // Cancel edit expense
+    function cancelEditExpense(idx) {
+      delete expenses[idx].editing;
+      render();
+    }
+
+    // Add donor
+    document.getElementById('donor-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('donor-name').value.trim();
+      const amount = parseInt(document.getElementById('donor-amount').value, 10);
+      if (name && amount > 0) {
+        donors.push({ name, amount });
+        render();
+        this.reset();
+      }
+    });
+      // Edit donor
+      function editDonor(idx) {
+        donors[idx].editing = true;
+        render();
+      }
+      // Save donor
+      function saveDonor(idx) {
+        const name = document.getElementById('edit-donor-name-' + idx).value.trim();
+        const amount = parseInt(document.getElementById('edit-donor-amount-' + idx).value, 10);
+        if (name && amount > 0) {
+          donors[idx] = { name, amount };
+          render();
+        }
+      }
+      // Cancel edit donor
+      function cancelEditDonor(idx) {
+        delete donors[idx].editing;
+        render();
+      }
+    // Add expense
+    document.getElementById('expense-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const item = document.getElementById('expense-item').value.trim();
+      const spentBy = document.getElementById('expense-spentby').value.trim();
+      const amount = parseInt(document.getElementById('expense-amount').value, 10);
+      if (item && spentBy && amount > 0) {
+        expenses.push({ item, spentBy, amount });
+        render();
+        this.reset();
+      }
+    });
+    // --- Shared Data Sync Logic ---
+    // Use localStorage events to sync donors, expenses, and events across all tabs/users
+window.addEventListener('storage', function(e) {
+  if (e.key === 'donors') {
+    donors = JSON.parse(localStorage.getItem('donors') || '[]');
+    if (document.getElementById('main-content').style.display !== 'none') render();
+  } else if (e.key === 'expenses') {
+    expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+    if (document.getElementById('main-content').style.display !== 'none') render();
+  } else if (e.key === 'events') {
+    events = JSON.parse(localStorage.getItem('events') || '[]');
+    if (document.getElementById('main-content').style.display !== 'none') render();
+  } else if (e.key === 'galleryItems') {
+    galleryItems = JSON.parse(localStorage.getItem('galleryItems') || '[]');
+    renderGallery();
+  }
+});
+    // Add logout button to dashboard/events area for all users
+    function renderLogoutBtnInMain() {
+      let dashboardSection = document.getElementById('dashboard-section');
+      let eventsSection = document.getElementById('events-section');
+      // Remove any existing logout buttons
+      let oldBtns = document.querySelectorAll('#logout-btn-main');
+      oldBtns.forEach(btn => btn.remove());
+      if (!currentUser) return;
+      // Create logout button
+      function handleLogout() {
+        currentUser = null;
+        document.getElementById('main-content').style.display = 'none';
+        document.getElementById('signup-section').style.display = 'none';
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('login-form').reset();
+        document.getElementById('login-error').textContent = 'Logout successfully!';
+        clearSessionTimeout();
+        updateLogoutBtnVisibility();
+        renderLogoutBtnInMain();
+      }
+      let btn1 = document.createElement('button');
+      btn1.id = 'logout-btn-main';
+      btn1.textContent = 'Logout';
+      btn1.style.cssText = 'background:linear-gradient(90deg,#ffd54f 0%,#ffb300 100%);color:#fff;border:none;border-radius:18px;padding:7px 18px;font-size:0.98em;cursor:pointer;margin:0 0 18px 0;box-shadow:0 2px 6px #e6a13c33;transition:background 0.2s,box-shadow 0.2s,color 0.2s,transform 0.18s cubic-bezier(.4,2,.6,1),filter 0.18s;font-weight:bold;display:block;float:right;z-index:1002;';
+      btn1.onclick = handleLogout;
+      let btn2 = btn1.cloneNode(true);
+      btn2.onclick = handleLogout;
+      // Add to dashboard and events section
+      if (dashboardSection) dashboardSection.insertBefore(btn1, dashboardSection.firstChild);
+      if (eventsSection) eventsSection.insertBefore(btn2, eventsSection.firstChild);
+    }
   </script>
   <footer style="text-align:center;margin:32px 0 12px 0;font-size:1em;color:#b36b00;opacity:0.92;letter-spacing:0.2px;">
     <div style="margin-bottom:4px;">
