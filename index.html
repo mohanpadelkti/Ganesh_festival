@@ -1079,28 +1079,34 @@ db.collection('users').onSnapshot(snapshot => {
       } else {
         expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th>';
       }
-      expenses.forEach((e, i) => {
-        let row;
-        if (isAdmin && e.editing) {
-          row = document.createElement('tr');
-          row.innerHTML = `
-            <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
-            <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
-            <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px' min='1'></td>
-            <td>
-              <button class="icon-btn save-btn" onclick="saveExpense(${i})"><i class="fa fa-check"></i></button>
-              <button class="icon-btn cancel-btn" onclick="cancelEditExpense(${i})"><i class="fa fa-times"></i></button>
-            </td>
-          `;
-        } else if (isAdmin) {
-          row = document.createElement('tr');
-          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editExpense(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${i})"><i class="fa fa-trash"></i></button></td>`;
-        } else {
-          row = document.createElement('tr');
-          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td>`;
-        }
+      if (expenses.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="${isAdmin ? 4 : 3}" style="text-align:center;color:#b36b00;font-weight:bold;">No expenses have been updated by admin yet. Once updated, the data will be reflected here.</td>`;
         expensesTbody.appendChild(row);
-      });
+      } else {
+        expenses.forEach((e, i) => {
+          let row;
+          if (isAdmin && e.editing) {
+            row = document.createElement('tr');
+            row.innerHTML = `
+              <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
+              <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
+              <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px' min='1'></td>
+              <td>
+                <button class="icon-btn save-btn" onclick="saveExpense(${i})"><i class="fa fa-check"></i></button>
+                <button class="icon-btn cancel-btn" onclick="cancelEditExpense(${i})"><i class="fa fa-times"></i></button>
+              </td>
+            `;
+          } else if (isAdmin) {
+            row = document.createElement('tr');
+            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editExpense(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${i})"><i class="fa fa-trash"></i></button></td>`;
+          } else {
+            row = document.createElement('tr');
+            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td>`;
+          }
+          expensesTbody.appendChild(row);
+        });
+      }
       // Calculate totals
       const totalDonated = donors.reduce((sum, d) => sum + d.amount, 0);
       const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
