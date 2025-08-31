@@ -574,7 +574,7 @@ const db = firebase.firestore();
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <script>
     // --- Gallery Logic ---
-  let galleryItems = JSON.parse(localStorage.getItem('galleryItems') || '[]');
+  let galleryItems = [];
 
     function renderGallery() {
       const grid = document.getElementById('gallery-grid');
@@ -583,6 +583,7 @@ const db = firebase.firestore();
         grid.innerHTML = '<div style="color:#b36b00;font-size:1.1em;">No images or videos uploaded yet.</div>';
         return;
       }
+      const isAdmin = currentUser && currentUser.isAdmin;
       galleryItems.forEach((item, i) => {
         let wrapper = document.createElement('div');
         wrapper.style.position = 'relative';
@@ -606,21 +607,23 @@ const db = firebase.firestore();
         }
         if (el) {
           wrapper.appendChild(el);
-          // Delete button
-          let delBtn = document.createElement('button');
-          delBtn.innerHTML = '<i class="fa fa-trash"></i>';
-          delBtn.className = 'icon-btn delete-btn';
-          delBtn.style.position = 'absolute';
-          delBtn.style.top = '4px';
-          delBtn.style.right = '4px';
-          delBtn.onclick = function() {
-            if (confirm('Delete this item from gallery?')) {
-              galleryItems.splice(i, 1);
-              db.collection('gallery').doc('main').set({ list: galleryItems });
-              renderGallery();
-            }
-          };
-          wrapper.appendChild(delBtn);
+          // Delete button (admin only)
+          if (isAdmin) {
+            let delBtn = document.createElement('button');
+            delBtn.innerHTML = '<i class="fa fa-trash"></i>';
+            delBtn.className = 'icon-btn delete-btn';
+            delBtn.style.position = 'absolute';
+            delBtn.style.top = '4px';
+            delBtn.style.right = '4px';
+            delBtn.onclick = function() {
+              if (confirm('Delete this item from gallery?')) {
+                galleryItems.splice(i, 1);
+                db.collection('gallery').doc('main').set({ list: galleryItems });
+                renderGallery();
+              }
+            };
+            wrapper.appendChild(delBtn);
+          }
           grid.appendChild(wrapper);
         }
       });
@@ -662,6 +665,12 @@ const db = firebase.firestore();
     // Gallery upload logic
     document.getElementById('gallery-upload-form').addEventListener('submit', function(e) {
       e.preventDefault();
+      const isAdmin = currentUser && currentUser.isAdmin;
+      if (!isAdmin) {
+        document.getElementById('gallery-upload-msg').textContent = 'Only admin can upload.';
+        setTimeout(()=>{document.getElementById('gallery-upload-msg').textContent='';}, 2000);
+        return;
+      }
       const files = document.getElementById('gallery-files').files;
       if (!files.length) return;
       let loaded = 0;
@@ -676,7 +685,7 @@ const db = firebase.firestore();
           });
           loaded++;
           if (loaded === files.length) {
-            localStorage.setItem('galleryItems', JSON.stringify(galleryItems));
+            db.collection('gallery').doc('main').set({ list: galleryItems });
             renderGallery();
             document.getElementById('gallery-upload-msg').textContent = 'Upload successful!';
             setTimeout(()=>{document.getElementById('gallery-upload-msg').textContent='';}, 2000);
@@ -1278,4 +1287,5 @@ ensureAdminUser();
   </footer>
 </body>
 </html>
+
 
