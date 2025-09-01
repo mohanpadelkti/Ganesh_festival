@@ -536,7 +536,7 @@ const db = firebase.firestore();
           </form>
           <table id="expenses-table">
             <thead>
-              <tr><th>Item</th><th>Spent By</th><th>Amount</th><th>Action</th></tr>
+              <tr><th>Item</th><th>Spent By</th><th>Amount</th><th>Receipts (if any)</th><th>Action</th></tr>
             </thead>
             <tbody></tbody>
           </table>
@@ -1084,32 +1084,46 @@ db.collection('users').onSnapshot(snapshot => {
       expensesTbody.innerHTML = '';
       // Set table header for admin/normal user
       if (isAdmin) {
-        expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th><th>Action</th>';
+        expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th><th>Receipts (if any)</th><th>Action</th>';
       } else {
-        expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th>';
+        expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th><th>Receipts (if any)</th>';
       }
-      expenses.forEach((e, i) => {
-        let row;
-        if (isAdmin && e.editing) {
-          row = document.createElement('tr');
-          row.innerHTML = `
-            <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
-            <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
-            <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px' min='1'></td>
-            <td>
-              <button class="icon-btn save-btn" onclick="saveExpense(${i})"><i class="fa fa-check"></i></button>
-              <button class="icon-btn cancel-btn" onclick="cancelEditExpense(${i})"><i class="fa fa-times"></i></button>
-            </td>
-          `;
-        } else if (isAdmin) {
-          row = document.createElement('tr');
-          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editExpense(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${i})"><i class="fa fa-trash"></i></button></td>`;
-        } else {
-          row = document.createElement('tr');
-          row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td>`;
-        }
+      if (expenses.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="5" style="text-align:center;color:#b36b00;font-weight:bold;padding:24px 0;">Expense details are not updated by admin. Once updated, data will be reflected here.</td>`;
         expensesTbody.appendChild(row);
-      });
+      } else {
+        expenses.forEach((e, i) => {
+          let row = document.createElement('tr');
+          let receiptHtml = '';
+            if (e.receipt) {
+              receiptHtml = `
+                <a href="${e.receipt}" target="_blank" title="View Receipt" style="margin-right:8px;"><i class="fa fa-eye"></i></a>
+                <a href="${e.receipt}" download title="Download Receipt"><i class="fa fa-download"></i></a>
+              `;
+            }
+            if (isAdmin && !e.editing && !e.receipt) {
+              receiptHtml = `<button class='icon-btn' title='Upload Receipt' onclick='openReceiptModal(${i})'><i class="fa fa-upload"></i> Upload</button>`;
+            }
+          if (isAdmin && e.editing) {
+            row.innerHTML = `
+              <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
+              <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
+              <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px' min='1'></td>
+              <td></td>
+              <td>
+                <button class="icon-btn save-btn" onclick="saveExpense(${i})"><i class="fa fa-check"></i></button>
+                <button class="icon-btn cancel-btn" onclick="cancelEditExpense(${i})"><i class="fa fa-times"></i></button>
+              </td>
+            `;
+          } else if (isAdmin) {
+            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>${receiptHtml}</td><td><button class="icon-btn edit-btn" onclick="editExpense(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${i})"><i class="fa fa-trash"></i></button></td>`;
+          } else {
+            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>${receiptHtml}</td>`;
+          }
+          expensesTbody.appendChild(row);
+        });
+      }
       // Calculate totals
       const totalDonated = donors.reduce((sum, d) => sum + d.amount, 0);
       const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
@@ -1285,7 +1299,76 @@ ensureAdminUser();
       Developed by Mohanbabu Padileti <span style="color:#e65100;font-size:1.1em;vertical-align:middle;">&#10084;&#65039;</span>
     </div>
   </footer>
+  <!-- Add modal HTML for receipt upload (place near the end of <body>) -->
+<div id="receiptUploadModal" class="modal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:32px 24px;border-radius:12px;box-shadow:0 2px 16px #0002;min-width:320px;max-width:90vw;position:relative;">
+    <h3 style="margin-top:0;font-size:1.2em;color:#b36b00;font-weight:bold;">Upload Receipt</h3>
+    <div id="receiptDropZone" style="border:2px dashed #b36b00;border-radius:8px;padding:32px;text-align:center;cursor:pointer;color:#b36b00;font-weight:bold;">Drag & Drop or Click to Select File</div>
+    <input type="file" id="receiptFileInput" accept="image/*,application/pdf" style="display:none;">
+    <div id="receiptUploadError" style="color:#c00;margin-top:12px;display:none;"></div>
+    <div style="margin-top:24px;text-align:right;">
+      <button onclick="closeReceiptModal()" style="margin-right:12px;">Cancel</button>
+      <button id="receiptUploadBtn" style="background:#b36b00;color:#fff;font-weight:bold;">Upload</button>
+    </div>
+  </div>
+</div>
+<script>
+// Modal logic for uploading receipt
+let currentReceiptExpenseIdx = null;
+window.openReceiptModal = function(idx) {
+  currentReceiptExpenseIdx = idx;
+  document.getElementById('receiptUploadModal').style.display = 'flex';
+  document.getElementById('receiptUploadError').style.display = 'none';
+  document.getElementById('receiptFileInput').value = '';
+};
+window.closeReceiptModal = function() {
+  document.getElementById('receiptUploadModal').style.display = 'none';
+  currentReceiptExpenseIdx = null;
+};
+
+// Setup modal event listeners after DOM is loaded
+function setupReceiptModalEvents() {
+  const dropZone = document.getElementById('receiptDropZone');
+  const fileInput = document.getElementById('receiptFileInput');
+  const uploadBtn = document.getElementById('receiptUploadBtn');
+
+  dropZone.onclick = () => fileInput.click();
+  dropZone.ondragover = e => { e.preventDefault(); dropZone.style.background='#fffbe6'; };
+  dropZone.ondragleave = e => { e.preventDefault(); dropZone.style.background=''; };
+  dropZone.ondrop = e => {
+    e.preventDefault();
+    dropZone.style.background='';
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      fileInput.files = e.dataTransfer.files;
+    }
+  };
+
+  uploadBtn.onclick = function() {
+    const file = fileInput.files[0];
+    if (!file) {
+      document.getElementById('receiptUploadError').innerText = 'Please select a file.';
+      document.getElementById('receiptUploadError').style.display = 'block';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      expenses[currentReceiptExpenseIdx].receipt = evt.target.result;
+      saveAll();
+      render();
+      closeReceiptModal();
+    };
+    reader.readAsDataURL(file);
+  };
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupReceiptModalEvents);
+} else {
+  setupReceiptModalEvents();
+}
+  </script>
 </body>
 </html>
+
 
 
