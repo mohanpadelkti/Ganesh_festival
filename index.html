@@ -429,6 +429,105 @@
       border-radius: 18px;
       padding: 18px 0 18px 0;
     }
+    .donors-section-header {
+  border: 3px solid #ffb300;
+  border-radius: 8px;
+  font-weight: bold;
+  background: #fffbe6;
+  color: #b36b00;
+  padding: 12px 0 12px 24px;
+  font-size: 1.3em;
+  margin-bottom: 16px;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+.expenses-section-header {
+  border: 3px solid #ffb300;
+  border-radius: 8px;
+  font-weight: bold;
+  background: #fffbe6;
+  color: #b36b00;
+  padding: 12px 0 12px 24px;
+  font-size: 1.3em;
+  margin-bottom: 16px;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+.search-input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.search-input-wrapper input[type="text"] {
+  padding-left: 32px;
+}
+.search-input-wrapper .fa-search {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b36b00;
+  font-size: 1.1em;
+  pointer-events: none;
+}
+#donor-form input[type="text"], #donor-form input[type="number"] {
+  border: 2px solid #43a047;
+  border-radius: 7px;
+  padding: 7px 14px;
+  margin-right: 10px;
+  font-size: 1em;
+  background: #e8f5e9;
+  color: #2e7d32;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+#donor-form input[type="text"]:focus, #donor-form input[type="number"]:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 0 2px #b9f6ca;
+  outline: none;
+}
+#donor-form button[type="submit"] {
+  background: linear-gradient(90deg, #43a047 60%, #b9f6ca 100%);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 8px 22px;
+  font-size: 1.08em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #b9f6ca;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+#expense-form input[type="text"], #expense-form input[type="number"] {
+  border: 2px solid #1976d2;
+  border-radius: 7px;
+  padding: 7px 14px;
+  margin-right: 10px;
+  font-size: 1em;
+  background: #e3f2fd;
+  color: #0d47a1;
+  transition: border 0.2s, box-shadow 0.2s;
+  margin-bottom: 10px;
+}
+#expense-form input[type="text"]:focus, #expense-form input[type="number"]:focus {
+  border-color: #64b5f6;
+  box-shadow: 0 0 0 2px #bbdefb;
+  outline: none;
+}
+#expense-form button[type="submit"] {
+  background: linear-gradient(90deg, #8d6e63 60%, #d7ccc8 100%);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 8px 22px;
+  font-size: 1.08em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #d7ccc8;
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-top: 8px;
+  display: block;
+}
   </style>
 </head>
 <body>
@@ -515,31 +614,43 @@ const db = firebase.firestore();
           <h1>Ganesh Festival - Donors & Expenses</h1>
           <div class="summary" id="summary"></div>
           <button id="download-report-btn"><i class="fa fa-file-pdf"></i> Download PDF Report</button>
-          <h2>Donors</h2>
+          <h2 class="donors-section-header">Donors</h2>
           <form id="donor-form" style="margin-bottom:16px;display:none;">
             <input type="text" id="donor-name" placeholder="Name" required>
             <input type="number" id="donor-amount" placeholder="Amount" required min="1">
             <button type="submit">Add Donor</button>
           </form>
+          <div style="margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+            <span class="search-input-wrapper">
+              <i class="fa fa-search"></i>
+              <input type="text" id="donor-search" placeholder="Search donor by name..." style="padding:4px 10px 4px 32px;border-radius:6px;border:1px solid #ccc;min-width:180px;">
+            </span>
+            <span id="donor-pagination-info" style="margin-left:auto;font-size:0.98em;color:#b36b00;"></span>
+          </div>
           <table id="donors-table">
             <thead>
               <tr><th>Name</th><th>Amount</th><th>Action</th></tr>
             </thead>
             <tbody></tbody>
           </table>
-          <h2>Expenses</h2>
+          <div id="donor-pagination" style="margin:10px 0 18px 0;text-align:center;"></div>
+          <h2 class="expenses-section-header">Expenses</h2>
           <form id="expense-form" style="margin-bottom:16px;display:none;">
             <input type="text" id="expense-item" placeholder="Item" required>
             <input type="text" id="expense-spentby" placeholder="Spent By" required>
             <input type="number" id="expense-amount" placeholder="Amount" required min="1">
             <button type="submit">Add Expense</button>
           </form>
+          <div style="margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+            <span id="expense-pagination-info" style="margin-left:auto;font-size:0.98em;color:#b36b00;"></span>
+          </div>
           <table id="expenses-table">
             <thead>
               <tr><th>Item</th><th>Spent By</th><th>Amount</th><th>Receipts (if any)</th><th>Action</th></tr>
             </thead>
             <tbody></tbody>
           </table>
+          <div id="expense-pagination" style="margin:10px 0 18px 0;text-align:center;"></div>
         </div>
         <div id="events-section" style="display:none;">
           <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
@@ -935,7 +1046,7 @@ db.collection('users').onSnapshot(snapshot => {
       const isAdmin = currentUser && currentUser.isAdmin;
       events.forEach((ev, i) => {
         const li = document.createElement('li');
-        li.style.background = '#fffde7';
+        li.style.background = '#fffbe7';
         li.style.marginBottom = '12px';
         li.style.padding = '12px 16px';
         li.style.borderRadius = '8px';
@@ -1060,24 +1171,63 @@ db.collection('users').onSnapshot(snapshot => {
       } else {
         donorsTable.innerHTML = '<th>Name</th><th>Amount</th>';
       }
-      donors.forEach((d, i) => {
+      // --- Donor Pagination & Search ---
+      const donorsPerPage = 10;
+      let donorPage = window.donorPage || 1;
+      let donorSearch = (window.donorSearch || '').toLowerCase();
+      let filteredDonors = donors.filter(d => d.name.toLowerCase().includes(donorSearch));
+      let totalPages = Math.max(1, Math.ceil(filteredDonors.length / donorsPerPage));
+      if (donorPage > totalPages) donorPage = totalPages;
+      let startIdx = (donorPage - 1) * donorsPerPage;
+      let endIdx = startIdx + donorsPerPage;
+      let donorsToShow = filteredDonors.slice(startIdx, endIdx);
+      donorsToShow.forEach((d, i) => {
+        let realIdx = donors.indexOf(d);
         let row = document.createElement('tr');
         if (isAdmin && d.editing) {
           row.innerHTML = `
-            <td><input type='text' value='${d.name}' id='edit-donor-name-${i}' style='width:90px'></td>
-            <td><input type='number' value='${d.amount}' id='edit-donor-amount-${i}' style='width:70px'></td>
+            <td><input type='text' value='${d.name}' id='edit-donor-name-${realIdx}' style='width:90px'></td>
+            <td><input type='number' value='${d.amount}' id='edit-donor-amount-${realIdx}' style='width:70px'></td>
             <td>
-              <button class="icon-btn save-btn" onclick="saveDonor(${i})"><i class="fa fa-check"></i></button>
-              <button class="icon-btn cancel-btn" onclick="cancelEditDonor(${i})"><i class="fa fa-times"></i></button>
+              <button class="icon-btn save-btn" onclick="saveDonor(${realIdx})"><i class="fa fa-check"></i></button>
+              <button class="icon-btn cancel-btn" onclick="cancelEditDonor(${realIdx})"><i class="fa fa-times"></i></button>
             </td>
           `;
         } else if (isAdmin) {
-          row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editDonor(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteDonor(${i})"><i class="fa fa-trash"></i></button></td>`;
+          row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td><td><button class="icon-btn edit-btn" onclick="editDonor(${realIdx})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteDonor(${realIdx})"><i class="fa fa-trash"></i></button></td>`;
         } else {
           row.innerHTML = `<td>${d.name}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${d.amount}</span></td>`;
         }
         donorsTbody.appendChild(row);
       });
+      // Pagination controls
+      const pagDiv = document.getElementById('donor-pagination');
+      pagDiv.innerHTML = '';
+      if (totalPages > 1) {
+        if (donorPage > 1) pagDiv.innerHTML += `<button onclick="changeDonorPage(${donorPage-1})">&laquo; Prev</button> `;
+        for (let p = 1; p <= totalPages; p++) {
+          pagDiv.innerHTML += `<button onclick="changeDonorPage(${p})"${p===donorPage?' style=\'font-weight:bold;background:#ffe082;\'':''}>${p}</button> `;
+        }
+        if (donorPage < totalPages) pagDiv.innerHTML += `<button onclick="changeDonorPage(${donorPage+1})">Next &raquo;</button>`;
+      }
+      document.getElementById('donor-pagination-info').textContent = `Page ${donorPage} of ${totalPages} (${filteredDonors.length} donors)`;
+      // Save page/search state
+      window.donorPage = donorPage;
+      window.donorSearch = donorSearch;
+    // Donor pagination/search handlers
+    window.changeDonorPage = function(page) {
+      window.donorPage = page;
+      render();
+    };
+    const donorSearchInput = document.getElementById('donor-search');
+    if (donorSearchInput) {
+      donorSearchInput.value = window.donorSearch || '';
+      donorSearchInput.oninput = function() {
+        window.donorSearch = donorSearchInput.value;
+        window.donorPage = 1;
+        render();
+      };
+    }
       // Render expenses
       const expensesTable = document.querySelector('#expenses-table thead tr');
       const expensesTbody = document.querySelector('#expenses-table tbody');
@@ -1088,12 +1238,21 @@ db.collection('users').onSnapshot(snapshot => {
       } else {
         expensesTable.innerHTML = '<th>Item</th><th>Spent By</th><th>Amount</th><th>Receipts (if any)</th>';
       }
+      // --- Expense Pagination ---
+      const expensesPerPage = 10;
+      let expensePage = window.expensePage || 1;
+      let totalExpensePages = Math.max(1, Math.ceil(expenses.length / expensesPerPage));
+      if (expensePage > totalExpensePages) expensePage = totalExpensePages;
+      let startEIdx = (expensePage - 1) * expensesPerPage;
+      let endEIdx = startEIdx + expensesPerPage;
+      let expensesToShow = expenses.slice(startEIdx, endEIdx);
       if (expenses.length === 0) {
         const row = document.createElement('tr');
         row.innerHTML = `<td colspan="5" style="text-align:center;color:#b36b00;font-weight:bold;padding:24px 0;">Expense details are not updated by admin. Once updated, data will be reflected here.</td>`;
         expensesTbody.appendChild(row);
       } else {
-        expenses.forEach((e, i) => {
+        expensesToShow.forEach((e, i) => {
+          let realIdx = expenses.indexOf(e);
           let row = document.createElement('tr');
           let receiptHtml = '';
             if (e.receipt) {
@@ -1103,27 +1262,44 @@ db.collection('users').onSnapshot(snapshot => {
               `;
             }
             if (isAdmin && !e.editing && !e.receipt) {
-              receiptHtml = `<button class='icon-btn' title='Upload Receipt' onclick='openReceiptModal(${i})'><i class="fa fa-upload"></i> Upload</button>`;
+              receiptHtml = `<button class='icon-btn' title='Upload Receipt' onclick='openReceiptModal(${realIdx})'><i class="fa fa-upload"></i> Upload</button>`;
             }
           if (isAdmin && e.editing) {
             row.innerHTML = `
-              <td><input type='text' value='${e.item}' id='edit-item-${i}' style='width:90px'></td>
-              <td><input type='text' value='${e.spentBy}' id='edit-spentby-${i}' style='width:90px'></td>
-              <td><input type='number' value='${e.amount}' id='edit-amount-${i}' style='width:70px' min='1'></td>
+              <td><input type='text' value='${e.item}' id='edit-item-${realIdx}' style='width:90px'></td>
+              <td><input type='text' value='${e.spentBy}' id='edit-spentby-${realIdx}' style='width:90px'></td>
+              <td><input type='number' value='${e.amount}' id='edit-amount-${realIdx}' style='width:70px' min='1'></td>
               <td></td>
               <td>
-                <button class="icon-btn save-btn" onclick="saveExpense(${i})"><i class="fa fa-check"></i></button>
-                <button class="icon-btn cancel-btn" onclick="cancelEditExpense(${i})"><i class="fa fa-times"></i></button>
+                <button class="icon-btn save-btn" onclick="saveExpense(${realIdx})"><i class="fa fa-check"></i></button>
+                <button class="icon-btn cancel-btn" onclick="cancelEditExpense(${realIdx})"><i class="fa fa-times"></i></button>
               </td>
             `;
           } else if (isAdmin) {
-            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>${receiptHtml}</td><td><button class="icon-btn edit-btn" onclick="editExpense(${i})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${i})"><i class="fa fa-trash"></i></button></td>`;
+            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>${receiptHtml}</td><td><button class="icon-btn edit-btn" onclick="editExpense(${realIdx})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${realIdx})"><i class="fa fa-trash"></i></button></td>`;
           } else {
             row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>${receiptHtml}</td>`;
           }
           expensesTbody.appendChild(row);
         });
       }
+      // Pagination controls
+      const expPagDiv = document.getElementById('expense-pagination');
+      expPagDiv.innerHTML = '';
+      if (totalExpensePages > 1) {
+        if (expensePage > 1) expPagDiv.innerHTML += `<button onclick="changeExpensePage(${expensePage-1})">&laquo; Prev</button> `;
+        for (let p = 1; p <= totalExpensePages; p++) {
+          expPagDiv.innerHTML += `<button onclick="changeExpensePage(${p})"${p===expensePage?' style=\'font-weight:bold;background:#ffe082;\'':''}>${p}</button> `;
+        }
+        if (expensePage < totalExpensePages) expPagDiv.innerHTML += `<button onclick="changeExpensePage(${expensePage+1})">Next &raquo;</button>`;
+      }
+      document.getElementById('expense-pagination-info').textContent = `Page ${expensePage} of ${totalExpensePages} (${expenses.length} expenses)`;
+      window.expensePage = expensePage;
+    // Expense pagination handler
+    window.changeExpensePage = function(page) {
+      window.expensePage = page;
+      render();
+    };
       // Calculate totals
       const totalDonated = donors.reduce((sum, d) => sum + d.amount, 0);
       const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
@@ -1369,6 +1545,5 @@ if (document.readyState === 'loading') {
   </script>
 </body>
 </html>
-
 
 
