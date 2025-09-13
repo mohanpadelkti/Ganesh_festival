@@ -471,7 +471,7 @@
   font-size: 1.1em;
   pointer-events: none;
 }
-#donor-form input[type="text"], #donor-form input[type="number"] {
+#donor-form input[type="text"], #donor-form input[type="number"], #special-form input[type="text"] {
   border: 2px solid #43a047;
   border-radius: 7px;
   padding: 7px 14px;
@@ -481,12 +481,12 @@
   color: #2e7d32;
   transition: border 0.2s, box-shadow 0.2s;
 }
-#donor-form input[type="text"]:focus, #donor-form input[type="number"]:focus {
+#donor-form input[type="text"]:focus, #donor-form input[type="number"]:focus, #special-form input[type="text"]:focus {
   border-color: #66bb6a;
   box-shadow: 0 0 0 2px #b9f6ca;
   outline: none;
 }
-#donor-form button[type="submit"] {
+#donor-form button[type="submit"], #special-form button[type="submit"] {
   background: linear-gradient(90deg, #43a047 60%, #b9f6ca 100%);
   color: #fff;
   border: none;
@@ -634,6 +634,28 @@ const db = firebase.firestore();
             <tbody></tbody>
           </table>
           <div id="donor-pagination" style="margin:10px 0 18px 0;text-align:center;"></div>
+
+            <!-- Special Contributors Section -->
+            <h2 class="donors-section-header">Special Contributors</h2>
+            <form id="special-form" style="margin-bottom:16px;display:none;">
+              <input type="text" id="special-name" placeholder="Name" required>
+              <input type="text" id="special-desc" placeholder="Description" required>
+              <button type="submit">Add Contributor</button>
+            </form>
+            <div style="margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+              <span class="search-input-wrapper">
+                <i class="fa fa-search"></i>
+                <input type="text" id="special-search" placeholder="Search by name..." style="padding:4px 10px 4px 32px;border-radius:6px;border:1px solid #ccc;min-width:180px;">
+              </span>
+              <span id="special-pagination-info" style="margin-left:auto;font-size:0.98em;color:#b36b00;"></span>
+            </div>
+            <table id="special-table">
+              <thead>
+                <tr><th>Name</th><th>Description</th><th>Action</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div id="special-pagination" style="margin:10px 0 18px 0;text-align:center;"></div>
           <h2 class="expenses-section-header">Expenses</h2>
           <form id="expense-form" style="margin-bottom:16px;display:none;">
             <input type="text" id="expense-item" placeholder="Item" required>
@@ -937,6 +959,28 @@ const db = firebase.firestore();
         doc.text('No donors.', 18, y + 6);
         y += 14;
       }
+
+      // Special Contributors Table
+      doc.setFontSize(13);
+      doc.text('Special Contributors', 14, y);
+      y += 4;
+      if (specialContributors && specialContributors.length > 0) {
+        doc.autoTable({
+          startY: y,
+          head: [['Name', 'Description']],
+          body: specialContributors.map(s => [s.name, s.desc]),
+          theme: 'grid',
+          headStyles: { fillColor: [255, 224, 178], textColor: [179, 107, 0] },
+          bodyStyles: { textColor: [44, 44, 44] },
+          margin: { left: 14, right: 14 },
+        });
+        y = doc.lastAutoTable.finalY + 8;
+      } else {
+        doc.setFontSize(11);
+        doc.text('No special contributors.', 18, y + 6);
+        y += 14;
+      }
+
       // Expenses Table
       doc.setFontSize(13);
       doc.text('Expenses', 14, y);
@@ -982,10 +1026,14 @@ const db = firebase.firestore();
   let expenses = [];
   let events = [];
 
+    // Special Contributors
+    let specialContributors = [];
+
 function saveAll() {
-  db.collection('donors').doc('main').set({ list: donors });
-  db.collection('expenses').doc('main').set({ list: expenses });
-  db.collection('events').doc('main').set({ list: events });
+    db.collection('donors').doc('main').set({ list: donors });
+    db.collection('expenses').doc('main').set({ list: expenses });
+    db.collection('events').doc('main').set({ list: events });
+    db.collection('specialContributors').doc('main').set({ list: specialContributors });
 }
 
 // --- Firestore Real-time Listeners (run once on app load) ---
@@ -1003,6 +1051,10 @@ db.collection('expenses').doc('main').onSnapshot(doc => {
 });
 db.collection('donors').doc('main').onSnapshot(doc => {
   donors = (doc.exists && doc.data().list) ? doc.data().list : [];
+  render();
+});
+db.collection('specialContributors').doc('main').onSnapshot(doc => {
+  specialContributors = (doc.exists && doc.data().list) ? doc.data().list : [];
   render();
 });
 // Firestore real-time listener for users
@@ -1160,6 +1212,120 @@ db.collection('users').onSnapshot(snapshot => {
       document.getElementById('donor-form').style.display = isAdmin ? 'block' : 'none';
       document.getElementById('expense-form').style.display = isAdmin ? 'block' : 'none';
       document.getElementById('event-form').style.display = isAdmin ? 'block' : 'none';
+
+  // Special Contributors form
+  document.getElementById('special-form').style.display = isAdmin ? 'block' : 'none';
+      // --- Special Contributors Render ---
+      const specialTable = document.querySelector('#special-table thead tr');
+      const specialTbody = document.querySelector('#special-table tbody');
+      specialTbody.innerHTML = '';
+      if (isAdmin) {
+        specialTable.innerHTML = '<th>Name</th><th>Description</th><th>Action</th>';
+      } else {
+        specialTable.innerHTML = '<th>Name</th><th>Description</th>';
+      }
+      // Pagination & Search
+      const specialPerPage = 10;
+      let specialPage = window.specialPage || 1;
+      let specialSearch = (window.specialSearch || '').toLowerCase();
+      let filteredSpecial = specialContributors.filter(s => s.name.toLowerCase().includes(specialSearch));
+      let totalSpecialPages = Math.max(1, Math.ceil(filteredSpecial.length / specialPerPage));
+      if (specialPage > totalSpecialPages) specialPage = totalSpecialPages;
+      let startSIdx = (specialPage - 1) * specialPerPage;
+      let endSIdx = startSIdx + specialPerPage;
+      let specialToShow = filteredSpecial.slice(startSIdx, endSIdx);
+      if (specialContributors.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="3" style="text-align:center;color:#b36b00;font-weight:bold;padding:24px 0;">Special contributor details are not updated by admin. Once updated, data will be reflected here.</td>`;
+        specialTbody.appendChild(row);
+      } else {
+        specialToShow.forEach((s, i) => {
+          let realIdx = specialContributors.indexOf(s);
+          let row = document.createElement('tr');
+          if (isAdmin && s.editing) {
+            row.innerHTML = `
+              <td><input type='text' value='${s.name}' id='edit-special-name-${realIdx}' style='width:90px'></td>
+              <td><input type='text' value='${s.desc}' id='edit-special-desc-${realIdx}' style='width:120px'></td>
+              <td>
+                <button class="icon-btn save-btn" onclick="saveSpecial(${realIdx})"><i class="fa fa-check"></i></button>
+                <button class="icon-btn cancel-btn" onclick="cancelEditSpecial(${realIdx})"><i class="fa fa-times"></i></button>
+              </td>
+            `;
+          } else if (isAdmin) {
+            row.innerHTML = `<td>${s.name}</td><td>${s.desc}</td><td><button class="icon-btn edit-btn" onclick="editSpecial(${realIdx})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteSpecial(${realIdx})"><i class="fa fa-trash"></i></button></td>`;
+          } else {
+            row.innerHTML = `<td>${s.name}</td><td>${s.desc}</td>`;
+          }
+          specialTbody.appendChild(row);
+        });
+      }
+      // Pagination controls
+      const specialPagDiv = document.getElementById('special-pagination');
+      specialPagDiv.innerHTML = '';
+      if (totalSpecialPages > 1) {
+        if (specialPage > 1) specialPagDiv.innerHTML += `<button onclick="changeSpecialPage(${specialPage-1})">&laquo; Prev</button> `;
+        for (let p = 1; p <= totalSpecialPages; p++) {
+          specialPagDiv.innerHTML += `<button onclick="changeSpecialPage(${p})"${p===specialPage ? ' style=\'font-weight:bold;background:#ffe082;\'' : ''}>${p}</button> `;
+        }
+        if (specialPage < totalSpecialPages) specialPagDiv.innerHTML += `<button onclick="changeSpecialPage(${specialPage+1})">Next &raquo;</button>`;
+      }
+      document.getElementById('special-pagination-info').textContent = `Page ${specialPage} of ${totalSpecialPages} (${filteredSpecial.length} contributors)`;
+      window.specialPage = specialPage;
+      window.specialSearch = specialSearch;
+      // Pagination/search handlers
+      window.changeSpecialPage = function(page) {
+        window.specialPage = page;
+        render();
+      };
+      const specialSearchInput = document.getElementById('special-search');
+      if (specialSearchInput) {
+        specialSearchInput.value = window.specialSearch || '';
+        specialSearchInput.oninput = function() {
+          window.specialSearch = specialSearchInput.value;
+          window.specialPage = 1;
+          render();
+        };
+      }
+    // Add special contributor
+    document.getElementById('special-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('special-name').value.trim();
+      const desc = document.getElementById('special-desc').value.trim();
+      if (name && desc) {
+        specialContributors.push({ name, desc });
+        saveAll();
+        render();
+        this.reset();
+      }
+    });
+    // Edit special contributor
+    window.editSpecial = function(idx) {
+      specialContributors[idx].editing = true;
+      render();
+    };
+    // Save special contributor
+    window.saveSpecial = function(idx) {
+      const name = document.getElementById('edit-special-name-' + idx).value.trim();
+      const desc = document.getElementById('edit-special-desc-' + idx).value.trim();
+      if (name && desc) {
+        specialContributors[idx] = { name, desc };
+        saveAll();
+        render();
+      }
+    };
+    // Cancel edit special contributor
+    window.cancelEditSpecial = function(idx) {
+      delete specialContributors[idx].editing;
+      render();
+    };
+    // Delete special contributor
+    window.deleteSpecial = function(idx) {
+      if (confirm('Are you sure you want to delete this contributor?')) {
+        specialContributors.splice(idx, 1);
+        saveAll();
+        render();
+      }
+    };
 
       // Render donors
       const donorsTable = document.querySelector('#donors-table thead tr');
@@ -1545,5 +1711,4 @@ if (document.readyState === 'loading') {
   </script>
 </body>
 </html>
-
 
