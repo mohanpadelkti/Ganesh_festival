@@ -330,7 +330,7 @@
     }
     .scroll-blessing-message {
       position: absolute;
-      top: -38px;
+      top: -52px;
       left: 0;
       width: 100%;
       font-size: 1.1em;
@@ -551,7 +551,7 @@ const db = firebase.firestore();
     </div>
   <div id="login-section" class="login-box" style="display:block;position:relative;">
     <div class="scroll-blessing-message">
-  Bye bye Ganesha! 👋
+  Advance Happy Vinayaka Chavithi - 2026!
     </div>
     <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
     <h2>Login to Ganesh Festival Portal - M.D Puttur village </h2>
@@ -612,6 +612,10 @@ const db = firebase.firestore();
         <div id="dashboard-section">
           <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
           <h1>Ganesh Festival - Donors & Expenses</h1>
+          <div style="margin:0 0 16px 0;display:flex;align-items:center;gap:10px;justify-content:center;">
+            <label for="year-selector">Select Year:</label>
+            <select id="year-selector" style="padding:7px 12px;border:2px solid #ffb300;border-radius:7px;background:#fffde7;color:#b36b00;font-weight:bold;"></select>
+          </div>
           <div class="summary" id="summary"></div>
           <button id="download-report-btn"><i class="fa fa-file-pdf"></i> Download PDF Report</button>
           <h2 class="donors-section-header">Donors</h2>
@@ -937,17 +941,19 @@ const db = firebase.firestore();
       const doc = new jsPDF();
       let y = 15;
       doc.setFontSize(18);
-      doc.text('M.D Puttur Ganesh festival contribution', 105, y, { align: 'center' });
+      doc.text(`M.D Puttur Ganesh festival contribution - ${selectedYear}`, 105, y, { align: 'center' });
       y += 10;
       doc.setFontSize(13);
       // Donors Table
       doc.text('Donors', 14, y);
       y += 4;
-      if (donors.length > 0) {
+      const selectedDonors = donors.filter(d => getRecordYear(d) === selectedYear);
+      const selectedExpenses = expenses.filter(e => getRecordYear(e) === selectedYear);
+      if (selectedDonors.length > 0) {
         doc.autoTable({
           startY: y,
           head: [['Name', 'Amount']],
-          body: donors.map(d => [d.name, d.amount.toLocaleString('en-IN')]),
+          body: selectedDonors.map(d => [d.name, d.amount.toLocaleString('en-IN')]),
           theme: 'grid',
           headStyles: { fillColor: [255, 224, 178], textColor: [179, 107, 0] },
           bodyStyles: { textColor: [44, 44, 44] },
@@ -964,11 +970,12 @@ const db = firebase.firestore();
       doc.setFontSize(13);
       doc.text('Special Contributors', 14, y);
       y += 4;
-      if (specialContributors && specialContributors.length > 0) {
+      const selectedSpecialContributors = specialContributors.filter(s => getRecordYear(s) === selectedYear);
+      if (selectedSpecialContributors.length > 0) {
         doc.autoTable({
           startY: y,
           head: [['Name', 'Description']],
-          body: specialContributors.map(s => [s.name, s.desc]),
+          body: selectedSpecialContributors.map(s => [s.name, s.desc]),
           theme: 'grid',
           headStyles: { fillColor: [255, 224, 178], textColor: [179, 107, 0] },
           bodyStyles: { textColor: [44, 44, 44] },
@@ -985,11 +992,11 @@ const db = firebase.firestore();
       doc.setFontSize(13);
       doc.text('Expenses', 14, y);
       y += 4;
-      if (expenses.length > 0) {
+      if (selectedExpenses.length > 0) {
         doc.autoTable({
           startY: y,
           head: [['Item', 'Spent By', 'Amount']],
-          body: expenses.map(e => [e.item, e.spentBy, e.amount.toLocaleString('en-IN')]),
+          body: selectedExpenses.map(e => [e.item, e.spentBy, e.amount.toLocaleString('en-IN')]),
           theme: 'grid',
           headStyles: { fillColor: [255, 224, 178], textColor: [179, 107, 0] },
           bodyStyles: { textColor: [44, 44, 44] },
@@ -1002,8 +1009,8 @@ const db = firebase.firestore();
         y += 14;
       }
       // Summary Table
-      const totalDonated = donors.reduce((sum, d) => sum + d.amount, 0);
-      const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+      const totalDonated = selectedDonors.reduce((sum, d) => sum + d.amount, 0);
+      const totalSpent = selectedExpenses.reduce((sum, e) => sum + e.amount, 0);
       const balance = totalDonated - totalSpent;
       doc.setFontSize(13);
       doc.autoTable({
@@ -1025,6 +1032,36 @@ const db = firebase.firestore();
   let donors = [];
   let expenses = [];
   let events = [];
+  let selectedYear = '2025';
+
+  function getRecordYear(record) {
+    return String(record.year || '2025');
+  }
+
+  function getAvailableYears() {
+    const currentYear = new Date().getFullYear();
+    const years = new Set();
+    for (let year = 2000; year <= currentYear + 1; year++) years.add(String(year));
+    years.add(selectedYear);
+    donors.forEach(donor => years.add(getRecordYear(donor)));
+    expenses.forEach(expense => years.add(getRecordYear(expense)));
+    return Array.from(years).sort((a, b) => Number(b) - Number(a));
+  }
+
+  function renderYearSelector() {
+    const selector = document.getElementById('year-selector');
+    if (!selector) return;
+    const years = getAvailableYears();
+    if (!years.includes(selectedYear)) selectedYear = years[0];
+    selector.innerHTML = years.map(year => `<option value="${year}">${year}</option>`).join('');
+    selector.value = selectedYear;
+    selector.onchange = function() {
+      selectedYear = this.value;
+      window.donorPage = 1;
+      window.expensePage = 1;
+      render();
+    };
+  }
 
     // Special Contributors
     let specialContributors = [];
@@ -1208,6 +1245,9 @@ db.collection('users').onSnapshot(snapshot => {
     function render() {
       // Permissions: admin can edit, normal user is read-only
       const isAdmin = currentUser && currentUser.isAdmin;
+      renderYearSelector();
+      const selectedDonors = donors.filter(d => getRecordYear(d) === selectedYear);
+      const selectedExpenses = expenses.filter(e => getRecordYear(e) === selectedYear);
       // Show/hide forms
       document.getElementById('donor-form').style.display = isAdmin ? 'block' : 'none';
       document.getElementById('expense-form').style.display = isAdmin ? 'block' : 'none';
@@ -1228,13 +1268,15 @@ db.collection('users').onSnapshot(snapshot => {
       const specialPerPage = 10;
       let specialPage = window.specialPage || 1;
       let specialSearch = (window.specialSearch || '').toLowerCase();
-      let filteredSpecial = specialContributors.filter(s => s.name.toLowerCase().includes(specialSearch));
+      let filteredSpecial = specialContributors
+        .filter(s => getRecordYear(s) === selectedYear)
+        .filter(s => s.name.toLowerCase().includes(specialSearch));
       let totalSpecialPages = Math.max(1, Math.ceil(filteredSpecial.length / specialPerPage));
       if (specialPage > totalSpecialPages) specialPage = totalSpecialPages;
       let startSIdx = (specialPage - 1) * specialPerPage;
       let endSIdx = startSIdx + specialPerPage;
       let specialToShow = filteredSpecial.slice(startSIdx, endSIdx);
-      if (specialContributors.length === 0) {
+      if (filteredSpecial.length === 0) {
         const row = document.createElement('tr');
         row.innerHTML = `<td colspan="3" style="text-align:center;color:#b36b00;font-weight:bold;padding:24px 0;">Special contributor details are not updated by admin. Once updated, data will be reflected here.</td>`;
         specialTbody.appendChild(row);
@@ -1292,7 +1334,7 @@ db.collection('users').onSnapshot(snapshot => {
       const name = document.getElementById('special-name').value.trim();
       const desc = document.getElementById('special-desc').value.trim();
       if (name && desc) {
-        specialContributors.push({ name, desc });
+        specialContributors.push({ name, desc, year: selectedYear });
         saveAll();
         render();
         this.reset();
@@ -1308,7 +1350,7 @@ db.collection('users').onSnapshot(snapshot => {
       const name = document.getElementById('edit-special-name-' + idx).value.trim();
       const desc = document.getElementById('edit-special-desc-' + idx).value.trim();
       if (name && desc) {
-        specialContributors[idx] = { name, desc };
+        specialContributors[idx] = { ...specialContributors[idx], name, desc, year: getRecordYear(specialContributors[idx]) };
         saveAll();
         render();
       }
@@ -1341,14 +1383,14 @@ db.collection('users').onSnapshot(snapshot => {
       const donorsPerPage = 10;
       let donorPage = window.donorPage || 1;
       let donorSearch = (window.donorSearch || '').toLowerCase();
-      let filteredDonors = donors.filter(d => d.name.toLowerCase().includes(donorSearch));
+      let filteredDonors = selectedDonors.filter(d => d.name.toLowerCase().includes(donorSearch));
       let totalPages = Math.max(1, Math.ceil(filteredDonors.length / donorsPerPage));
       if (donorPage > totalPages) donorPage = totalPages;
       let startIdx = (donorPage - 1) * donorsPerPage;
       let endIdx = startIdx + donorsPerPage;
       let donorsToShow = filteredDonors.slice(startIdx, endIdx);
       donorsToShow.forEach((d, i) => {
-        let realIdx = donors.indexOf(d);
+          let realIdx = donors.indexOf(d);
         let row = document.createElement('tr');
         if (isAdmin && d.editing) {
           row.innerHTML = `
@@ -1407,12 +1449,12 @@ db.collection('users').onSnapshot(snapshot => {
       // --- Expense Pagination ---
       const expensesPerPage = 10;
       let expensePage = window.expensePage || 1;
-      let totalExpensePages = Math.max(1, Math.ceil(expenses.length / expensesPerPage));
+      let totalExpensePages = Math.max(1, Math.ceil(selectedExpenses.length / expensesPerPage));
       if (expensePage > totalExpensePages) expensePage = totalExpensePages;
       let startEIdx = (expensePage - 1) * expensesPerPage;
       let endEIdx = startEIdx + expensesPerPage;
-      let expensesToShow = expenses.slice(startEIdx, endEIdx);
-      if (expenses.length === 0) {
+      let expensesToShow = selectedExpenses.slice(startEIdx, endEIdx);
+      if (selectedExpenses.length === 0) {
         const row = document.createElement('tr');
         row.innerHTML = `<td colspan="5" style="text-align:center;color:#b36b00;font-weight:bold;padding:24px 0;">Expense details are not updated by admin. Once updated, data will be reflected here.</td>`;
         expensesTbody.appendChild(row);
@@ -1459,7 +1501,7 @@ db.collection('users').onSnapshot(snapshot => {
         }
         if (expensePage < totalExpensePages) expPagDiv.innerHTML += `<button onclick="changeExpensePage(${expensePage+1})">Next &raquo;</button>`;
       }
-      document.getElementById('expense-pagination-info').textContent = `Page ${expensePage} of ${totalExpensePages} (${expenses.length} expenses)`;
+      document.getElementById('expense-pagination-info').textContent = `Page ${expensePage} of ${totalExpensePages} (${selectedExpenses.length} expenses)`;
       window.expensePage = expensePage;
     // Expense pagination handler
     window.changeExpensePage = function(page) {
@@ -1467,8 +1509,8 @@ db.collection('users').onSnapshot(snapshot => {
       render();
     };
       // Calculate totals
-      const totalDonated = donors.reduce((sum, d) => sum + d.amount, 0);
-      const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+      const totalDonated = selectedDonors.reduce((sum, d) => sum + d.amount, 0);
+      const totalSpent = selectedExpenses.reduce((sum, e) => sum + e.amount, 0);
       const balance = totalDonated - totalSpent;
       // Show summary
       document.getElementById('summary').innerHTML = `
@@ -1501,7 +1543,7 @@ db.collection('users').onSnapshot(snapshot => {
         return;
       }
       // Update the expense and re-render
-  expenses[idx] = { item, spentBy, amount };
+  expenses[idx] = { ...expenses[idx], item, spentBy, amount, year: getRecordYear(expenses[idx]) };
   saveAll();
   render();
     }
@@ -1525,7 +1567,7 @@ db.collection('users').onSnapshot(snapshot => {
       const name = document.getElementById('donor-name').value.trim();
       const amount = parseInt(document.getElementById('donor-amount').value, 10);
       if (name && amount > 0) {
-        donors.push({ name, amount });
+        donors.push({ name, amount, year: selectedYear });
         saveAll();
         render();
         this.reset();
@@ -1541,7 +1583,7 @@ db.collection('users').onSnapshot(snapshot => {
         const name = document.getElementById('edit-donor-name-' + idx).value.trim();
         const amount = parseInt(document.getElementById('edit-donor-amount-' + idx).value, 10);
         if (name && amount > 0) {
-    donors[idx] = { name, amount };
+    donors[idx] = { ...donors[idx], name, amount, year: getRecordYear(donors[idx]) };
     saveAll();
     render();
         }
@@ -1558,7 +1600,7 @@ db.collection('users').onSnapshot(snapshot => {
       const spentBy = document.getElementById('expense-spentby').value.trim();
       const amount = parseInt(document.getElementById('expense-amount').value, 10);
       if (item && spentBy && amount > 0) {
-        expenses.push({ item, spentBy, amount });
+        expenses.push({ item, spentBy, amount, year: selectedYear });
         saveAll();
         render();
         this.reset();
