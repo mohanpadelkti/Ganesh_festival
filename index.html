@@ -16,7 +16,7 @@
   <style>
     body {
       font-family: 'Poppins', 'Roboto', 'Segoe UI', Arial, sans-serif;
-      background: url('https://png.pngtree.com/png-clipart/20230810/original/pngtree-ganesh-chaturthi-festival-background-with-lord-ganesha-png-image_10696436.png') center top/cover no-repeat, linear-gradient(135deg, #fff8e1 0%, #fff3b0 50%, #ffe082 100%);
+      background: linear-gradient(135deg, #fff8e1 0%, #fff3b0 50%, #ffe082 100%);
       /* Gradient: light saffron to pale yellow */
       margin: 0; padding: 0;
       min-height: 100vh;
@@ -146,7 +146,7 @@
     .login-box {
       max-width: 350px;
       margin: 80px auto 0 auto;
-      background: linear-gradient(135deg, #fff8e1 0%, #fff3b0 100%) url('https://png.pngtree.com/png-clipart/20230810/original/pngtree-ganesh-chaturthi-festival-background-with-lord-ganesha-png-image_10696436.png') center 60px/cover no-repeat;
+      background: linear-gradient(135deg, #fff8e1 0%, #fff3b0 100%);
       border: 2px solid #e6a13c;
       border-radius: 18px;
       box-shadow: 0 6px 32px #e6a13c44, 0 1.5px 6px #ffb30033;
@@ -334,7 +334,7 @@
       left: 0;
       width: 100%;
       font-size: 1.1em;
-      color: #b36b00;
+      color: #0f766e;
       font-weight: bold;
       white-space: nowrap;
       overflow: hidden;
@@ -528,6 +528,322 @@
   margin-top: 8px;
   display: block;
 }
+
+    /* Usability layer: keep the existing festival style while improving scanning and mobile use. */
+    :root {
+      --ink: #4a3424;
+      --muted-ink: #765b43;
+      --surface: #fffdf7;
+      --line: #ead7b0;
+      --focus: #1976d2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      color: var(--ink);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    button, input, select { font: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid #64b5f6;
+      outline-offset: 2px;
+    }
+    button:disabled { cursor: not-allowed; opacity: 0.65; }
+    #main-content {
+      position: relative;
+      z-index: 1;
+    }
+    .login-box {
+      width: min(92vw, 420px);
+      min-height: 0;
+      margin-top: 72px;
+      padding: 32px 28px 28px;
+      background-color: var(--surface);
+    }
+    .login-box h2 {
+      margin: 0;
+      font-family: 'Poppins', 'Roboto', sans-serif !important;
+      font-size: clamp(1.2rem, 4vw, 1.55rem);
+      line-height: 1.25;
+    }
+    .login-title .title-main { color: #e87500; }
+    .login-title .title-place { color: #287a45; }
+    .login-title,
+    .login-title .title-main,
+    .login-title .title-place {
+      font-family: 'Dancing Script', cursive !important;
+      font-weight: 700;
+    }
+    .login-box form { gap: 10px; }
+    .login-box input {
+      min-height: 44px;
+      margin-bottom: 2px;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+    .login-box button[type="submit"] { min-height: 44px; }
+    .login-error {
+      min-height: 1.5em;
+      color: #b3261e;
+      font-weight: 600;
+    }
+    .login-box > div[style*="left:-410px"] {
+      position: static !important;
+      width: auto !important;
+      margin-top: 6px;
+      padding: 14px 16px !important;
+      text-align: left;
+      background: #fff8e8 !important;
+      border-color: var(--line) !important;
+      box-shadow: none !important;
+    }
+    .container {
+      width: min(96vw, 1200px);
+      padding: clamp(14px, 3vw, 32px);
+    }
+    .container > div:first-child { gap: clamp(16px, 3vw, 32px) !important; }
+    .container > div:first-child > div {
+      min-width: 0 !important;
+      width: 100%;
+    }
+    #gallery-section { flex: 1 1 300px !important; }
+    #gallery-section h1 { font-size: clamp(1.5rem, 4vw, 2rem); }
+    #dashboard-section h1, #events-section h1 {
+      font-family: 'Poppins', 'Roboto', sans-serif !important;
+      font-size: clamp(1.35rem, 4vw, 2rem);
+      line-height: 1.25;
+    }
+    .ganesh-large { width: clamp(84px, 18vw, 140px); margin-bottom: 16px; }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      line-height: 1.35;
+      color: var(--muted-ink);
+    }
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+      padding: 4px 10px;
+      border-right: 1px solid var(--line);
+    }
+    .summary-item:last-child { border-right: 0; }
+    .summary-label {
+      color: var(--muted-ink);
+      font-size: 0.82em;
+      font-weight: 700;
+    }
+    .summary-value {
+      color: var(--ink);
+      font-size: 1.1em;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .summary-value.credit { color: #16833b; }
+    .summary-value.debt { color: #c62828; }
+    .carry-forward-notice {
+      margin: 0 auto 16px;
+      max-width: 520px;
+      padding: 10px 14px;
+      border: 2px solid #0f766e;
+      border-radius: 8px;
+      background: #e6fffb;
+      color: #115e59;
+      text-align: center;
+      font-weight: 800;
+      box-shadow: 0 2px 8px #0f766e22;
+    }
+    .receipt-cell {
+      min-width: 150px;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .receipt-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-width: 112px;
+      min-height: 36px;
+      padding: 6px 10px;
+      margin: 0;
+      white-space: nowrap;
+      border-radius: 7px;
+    }
+    .receipt-cell a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      min-height: 34px;
+    }
+    table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    th, td { min-width: 110px; }
+    form[id$="-form"] input, form[id$="-form"] button {
+      min-height: 42px;
+    }
+    #donor-form, #special-form, #expense-form, #event-form {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fffdf8;
+    }
+    #donor-form button[type="submit"], #special-form button[type="submit"], #expense-form button[type="submit"] {
+      min-height: 42px;
+      margin: 4px 0 0;
+    }
+    .search-input-wrapper input { min-height: 40px; }
+    #logout-btn-wrapper { right: 14px !important; top: 12px !important; }
+    #show-dashboard, #show-events { min-height: 42px; }
+    .floating-bg-anim { opacity: 0.5; }
+    @media (max-width: 700px) {
+      body { font-size: 15px; }
+      .login-box { margin-top: 58px; padding: 26px 18px 22px; }
+      .scroll-blessing-message { top: -42px; font-size: 0.9em; }
+      .summary { grid-template-columns: 1fr; gap: 0; }
+      .summary-item { border-right: 0; border-bottom: 1px solid var(--line); padding: 8px 2px; }
+      .summary-item:last-child { border-bottom: 0; }
+      .container { margin: 22px auto; }
+      .container > div:first-child { display: block !important; }
+      #gallery-section, #gallery-section + div { margin-bottom: 18px; }
+      .search-input-wrapper { display: block; width: 100%; }
+      .search-input-wrapper input { width: 100%; min-width: 0 !important; }
+      #donor-pagination-info, #special-pagination-info, #expense-pagination-info { display: block; margin: 8px 0 0 !important; }
+      #donor-search, #special-search { width: 100%; }
+      #show-dashboard, #show-events { float: none !important; width: 100%; justify-content: center; margin: 4px 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    .app-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 0 0 22px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff8e8;
+    }
+    .app-tab {
+      flex: 1;
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted-ink);
+      font-size: clamp(8px, 1.6vw, 14px);
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    .app-tab:hover, .app-tab[aria-selected="true"] {
+      background: #fff;
+      color: #b36b00;
+      box-shadow: 0 2px 8px #e6a13c33;
+    }
+    .app-tab:nth-child(1) { color: #1769aa; }
+    .app-tab:nth-child(2) { color: #8a4f08; }
+    .app-tab:nth-child(3) { color: #287a45; }
+    .app-tab:nth-child(1)[aria-selected="true"] { background: #e3f2fd; }
+    .app-tab:nth-child(2)[aria-selected="true"] { background: #fff3e0; }
+    .app-tab:nth-child(3)[aria-selected="true"] { background: #e8f5e9; }
+    .workspace-content { flex: 2 1 500px; min-width: 0; }
+    .workspace-layout [data-tab-panel] { display: none !important; }
+    .workspace-layout [data-tab-panel].is-active { display: block !important; }
+    .workspace-layout > #gallery-section.is-active { width: 100%; max-width: none; }
+    .workspace-content:has(#dashboard-section.is-active),
+    .workspace-content:has(#events-section.is-active) { display: block; }
+    @media (max-width: 700px) {
+      .app-tabs { position: sticky; top: 8px; z-index: 5; }
+      .app-tab { font-size: 0.9rem; }
+    }
+    .dashboard-subtabs {
+      display: flex;
+      gap: 6px;
+      margin: 14px 0 18px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+    }
+    .dashboard-subtab {
+      flex: 0 0 auto;
+      min-height: 40px;
+      padding: 7px 14px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted-ink);
+      font-size: clamp(8px, 1.5vw, 13px);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .dashboard-subtab:hover, .dashboard-subtab[aria-selected="true"] {
+      border-color: #ffd180;
+      background: #fff8e8;
+      color: #b36b00;
+    }
+    .dashboard-subtab[aria-selected="true"] {
+      border-width: 2px;
+      box-shadow: 0 2px 8px #e6a13c33;
+    }
+    .dashboard-tab-hint {
+      margin: -8px 0 16px;
+      padding: 9px 12px;
+      border-left: 4px solid #ffb300;
+      border-radius: 6px;
+      background: #fff8e8;
+      color: var(--muted-ink);
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+    html { font-size: 8px; }
+    body, button, input, select, textarea, table, h1, h2, h3, label {
+      font-family: 'Roboto', sans-serif !important;
+    }
+    body {
+      position: relative;
+      isolation: isolate;
+      background: linear-gradient(120deg, #fff8e1 0%, #fff3b0 34%, #ffe082 68%, #fff8e1 100%);
+      background-size: 220% 220%;
+      animation: festival-background-drift 24s ease-in-out infinite alternate;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.22;
+      background-image: repeating-linear-gradient(118deg, transparent 0 42px, #ffffff 43px 44px, transparent 45px 86px);
+      background-size: 180px 180px;
+      animation: festival-pattern-drift 30s linear infinite;
+    }
+    @keyframes festival-background-drift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    @keyframes festival-pattern-drift {
+      from { transform: translate3d(-24px, -12px, 0); }
+      to { transform: translate3d(24px, 12px, 0); }
+    }
+    #login-section, #signup-section { z-index: 1; }
+    .dashboard-subtab:nth-child(1) { color: #1769aa; }
+    .dashboard-subtab:nth-child(2) { color: #8a4f08; }
+    .dashboard-subtab:nth-child(3) { color: #9a3f65; }
+    .dashboard-subtab:nth-child(4) { color: #287a45; }
+    .dashboard-subtab:nth-child(1)[aria-selected="true"] { background: #e3f2fd; }
+    .dashboard-subtab:nth-child(2)[aria-selected="true"] { background: #fff3e0; }
+    .dashboard-subtab:nth-child(3)[aria-selected="true"] { background: #fce4ec; }
+    .dashboard-subtab:nth-child(4)[aria-selected="true"] { background: #e8f5e9; }
+    .dashboard-panel { display: none; }
+    .dashboard-panel.is-active { display: block; }
   </style>
 </head>
 <body>
@@ -553,16 +869,16 @@ const db = firebase.firestore();
     <div class="scroll-blessing-message">
   Advance Happy Vinayaka Chavithi - 2026!
     </div>
-    <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
-    <h2>Login to Ganesh Festival Portal - M.D Puttur village </h2>
+    <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Lord Ganesha">
+    <h2 class="login-title"><span class="title-main">Login to Ganesh Festival Portal -</span><br><span class="title-place">M.D Puttur village</span></h2>
     <form id="login-form">
       <div class="input-icon-group">
         <span class="input-icon"><i class="fa fa-user"></i></span>
-        <input type="text" id="login-username" placeholder="Username" required><br>
+        <input type="text" id="login-username" placeholder="Username" autocomplete="username" required><br>
       </div>
       <div class="input-icon-group">
         <span class="input-icon"><i class="fa fa-lock"></i></span>
-        <input type="password" id="login-password" placeholder="Password" required><br>
+        <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required><br>
       </div>
       <button type="submit">Login</button>
       <div class="login-error" id="login-error"></div>
@@ -571,13 +887,13 @@ const db = firebase.firestore();
       <span>New user? <a href="#" id="show-signup">Sign up</a></span>
     </div>
     <div style="position:absolute;left:-410px;top:30px;width:340px;background:#fffde7;border:2px solid #ff9800;border-radius:12px;padding:20px 20px 16px 20px;box-shadow:0 2px 12px #ffb30055;">
-      <div style="font-size:1.18em;font-weight:bold;color:#d84315;margin-bottom:10px;letter-spacing:1px;"><span style='color:#d84315;font-weight:bold;'>Note:</span></div>
-      <div style="font-size:1.08em;font-weight:bold;color:#b36b00;margin-bottom:4px;">This application helps you track Ganesh festival donations, expenses, and event updates for our village.</div>
-      <div style="font-size:1.08em;font-weight:bold;color:#b36b00;">Easily manage contributors, expenses and download reports for full transparency.</div>
+      <div style="display:inline-block;font-size:8px;font-weight:bold;color:#d84315;background:#fff3cd;padding:3px 6px;border-radius:4px;margin-bottom:10px;letter-spacing:1px;"><span style='color:#d84315;font-weight:bold;'>Note:</span></div>
+      <div style="font-size:8px;font-weight:bold;color:red;margin-bottom:4px;">This application helps you track Ganesh festival donations, expenses, and event updates for our village.</div>
+      <div style="font-size:8px;font-weight:bold;color:red;">Easily manage contributors, expenses and download reports for full transparency.</div>
     </div>
   </div>
   <div id="signup-section" class="login-box" style="display:none;">
-    <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+    <img class="ganesh" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Lord Ganesha">
     <h2>Sign Up</h2>
     <form id="signup-form">
   <label for="signup-username" style="float:left;width:100%;text-align:left;margin-bottom:2px;"><b>Username <span style="color:red">*</span></b></label>
@@ -596,8 +912,13 @@ const db = firebase.firestore();
     </div>
   </div>
   <div class="container" id="main-content" style="display:none;">
-    <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; justify-content: center;">
-      <div id="gallery-section" style="margin-top:0; min-width:320px; max-width:400px; flex:1 1 340px; background:#fff; border-radius:12px; box-shadow:0 2px 16px #e6a13c22, 0 1.5px 6px #ffe08233; border:1.5px solid #ffe082; padding:24px 20px 20px 20px;">
+    <nav class="app-tabs" aria-label="Festival portal sections">
+      <button class="app-tab" type="button" data-tab="dashboard" aria-selected="true" title="Click Dashboard"><i class="fa fa-chart-line"></i> Dashboard</button>
+      <button class="app-tab" type="button" data-tab="gallery" aria-selected="false" title="Click Gallery"><i class="fa fa-images"></i> Gallery</button>
+      <button class="app-tab" type="button" data-tab="events" aria-selected="false" title="Click Events"><i class="fa fa-calendar-days"></i> Events</button>
+    </nav>
+    <div class="workspace-layout" style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; justify-content: center;">
+      <div id="gallery-section" data-tab-panel="gallery" style="margin-top:0; min-width:320px; max-width:400px; flex:1 1 340px; background:#fff; border-radius:12px; box-shadow:0 2px 16px #e6a13c22, 0 1.5px 6px #ffe08233; border:1.5px solid #ffe082; padding:24px 20px 20px 20px;">
         <h1 class="gallery-heading"><b>Gallery - Images & Videos</b></h1>
         <form id="gallery-upload-form" style="margin-bottom:18px;">
           <label class="gallery-upload-label"><b>Upload Images/Videos:</b></label>
@@ -608,16 +929,30 @@ const db = firebase.firestore();
         <button id="download-gallery-btn"><i class="fa fa-download"></i> <b>Download All</b></button>
         <div id="gallery-grid" style="display:flex;flex-wrap:wrap;gap:18px;"></div>
       </div>
-      <div style="flex:2 1 500px; min-width:340px; max-width:700px; background:#fff; border-radius:12px; box-shadow:0 2px 16px #e6a13c22, 0 1.5px 6px #ffe08233; border:1.5px solid #ffe082; padding:24px 20px 20px 20px; margin-left:0;">
-        <div id="dashboard-section">
-          <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+      <div class="workspace-content" style="flex:2 1 500px; min-width:340px; max-width:700px; background:#fff; border-radius:12px; box-shadow:0 2px 16px #e6a13c22, 0 1.5px 6px #ffe08233; border:1.5px solid #ffe082; padding:24px 20px 20px 20px; margin-left:0;">
+        <div id="dashboard-section" data-tab-panel="dashboard" class="is-active">
+          <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Lord Ganesha">
           <h1>Ganesh Festival - Donors & Expenses</h1>
           <div style="margin:0 0 16px 0;display:flex;align-items:center;gap:10px;justify-content:center;">
             <label for="year-selector">Select Year:</label>
             <select id="year-selector" style="padding:7px 12px;border:2px solid #ffb300;border-radius:7px;background:#fffde7;color:#b36b00;font-weight:bold;"></select>
           </div>
+          <div id="carry-forward-notice" class="carry-forward-notice" style="display:none;"></div>
           <div class="summary" id="summary"></div>
-          <button id="download-report-btn"><i class="fa fa-file-pdf"></i> Download PDF Report</button>
+          <nav class="dashboard-subtabs" aria-label="Dashboard data sections">
+            <button class="dashboard-subtab" type="button" data-dashboard-tab="donors" aria-selected="true" title="Click Donors"><i class="fa fa-users"></i> Donors</button>
+            <button class="dashboard-subtab" type="button" data-dashboard-tab="special" aria-selected="false" title="Click Special Contributors"><i class="fa fa-star"></i> Special Contributors</button>
+            <button class="dashboard-subtab" type="button" data-dashboard-tab="expenses" aria-selected="false" title="Click Expenses"><i class="fa fa-receipt"></i> Expenses</button>
+            <button class="dashboard-subtab" type="button" data-dashboard-tab="reports" aria-selected="false" title="Click Reports"><i class="fa fa-file-pdf"></i> Reports</button>
+          </nav>
+          <div class="dashboard-tab-hint" id="dashboard-tab-hint" role="status">Donors: add, search, edit, or remove donor contributions.</div>
+          <section class="dashboard-panel" data-dashboard-panel="reports">
+            <h2 class="donors-section-header">Reports</h2>
+            <p style="color:var(--muted-ink);margin-top:0;">View or download a PDF summary for the selected year, including donors, special contributors, expenses, and balance.</p>
+            <button id="view-report-btn" title="View Report"><i class="fa fa-eye"></i> View Report</button>
+            <button id="download-report-btn" title="Download Report"><i class="fa fa-download"></i> Download Report</button>
+          </section>
+          <section class="dashboard-panel is-active" data-dashboard-panel="donors">
           <h2 class="donors-section-header">Donors</h2>
           <form id="donor-form" style="margin-bottom:16px;display:none;">
             <input type="text" id="donor-name" placeholder="Name" required>
@@ -638,8 +973,10 @@ const db = firebase.firestore();
             <tbody></tbody>
           </table>
           <div id="donor-pagination" style="margin:10px 0 18px 0;text-align:center;"></div>
+          </section>
 
             <!-- Special Contributors Section -->
+          <section class="dashboard-panel" data-dashboard-panel="special">
             <h2 class="donors-section-header">Special Contributors</h2>
             <form id="special-form" style="margin-bottom:16px;display:none;">
               <input type="text" id="special-name" placeholder="Name" required>
@@ -660,6 +997,8 @@ const db = firebase.firestore();
               <tbody></tbody>
             </table>
             <div id="special-pagination" style="margin:10px 0 18px 0;text-align:center;"></div>
+          </section>
+          <section class="dashboard-panel" data-dashboard-panel="expenses">
           <h2 class="expenses-section-header">Expenses</h2>
           <form id="expense-form" style="margin-bottom:16px;display:none;">
             <input type="text" id="expense-item" placeholder="Item" required>
@@ -677,9 +1016,10 @@ const db = firebase.firestore();
             <tbody></tbody>
           </table>
           <div id="expense-pagination" style="margin:10px 0 18px 0;text-align:center;"></div>
+          </section>
         </div>
-        <div id="events-section" style="display:none;">
-          <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Ganesh Icon">
+        <div id="events-section" data-tab-panel="events" style="display:none;">
+          <img class="ganesh-large" src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Lord Ganesha">
           <h1>Events Live Updates</h1>
           <form id="event-form" style="margin-bottom:16px;display:none;">
             <input type="text" id="event-title" placeholder="Event Title" required>
@@ -692,20 +1032,20 @@ const db = firebase.firestore();
         </div>
       </div>
     </div>
-    <button id="show-dashboard" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;display:none;">Dashboard</button>
-    <button id="show-events" style="float:left;background:#fff3e0;color:#b36b00;border:1px solid #ffb300;border-radius:5px;padding:6px 18px;font-size:1em;cursor:pointer;">Events Live Updates</button>
+    <button id="show-dashboard" style="display:none;">Dashboard</button>
+    <button id="show-events" style="display:none;">Events Live Updates</button>
     <div style="clear:both;"></div>
     <div class="floating-bg-anim">
-      <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:8vw; animation-delay:0s; animation-duration:16s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:70vw; animation-delay:3s; animation-duration:19s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:40vw; animation-delay:7s; animation-duration:17s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:85vw; animation-delay:5s; animation-duration:20s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:25vw; animation-delay:2s; animation-duration:18s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/3043/3043812.png" class="floating-obj" style="left:55vw; animation-delay:6s; animation-duration:21s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" class="floating-obj flower" style="left:15vw; animation-delay:4s; animation-duration:22s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" class="floating-obj flower" style="left:60vw; animation-delay:8s; animation-duration:23s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" class="floating-obj flower" style="left:35vw; animation-delay:10s; animation-duration:20s;">
-      <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" class="floating-obj flower" style="left:80vw; animation-delay:12s; animation-duration:25s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj" alt="" style="left:8vw; animation-delay:0s; animation-duration:16s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj" alt="" style="left:70vw; animation-delay:3s; animation-duration:19s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj" alt="" style="left:40vw; animation-delay:7s; animation-duration:17s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj" alt="" style="left:85vw; animation-delay:5s; animation-duration:20s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj" alt="" style="left:25vw; animation-delay:2s; animation-duration:18s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj" alt="" style="left:55vw; animation-delay:6s; animation-duration:21s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj flower" alt="" style="left:15vw; animation-delay:4s; animation-duration:22s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj flower" alt="" style="left:60vw; animation-delay:8s; animation-duration:23s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj flower" alt="" style="left:35vw; animation-delay:10s; animation-duration:20s;">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" class="floating-obj flower" alt="" style="left:80vw; animation-delay:12s; animation-duration:25s;">
     </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -832,26 +1172,33 @@ const db = firebase.firestore();
         reader.readAsDataURL(file);
       }
     });
-    // --- Simple Routing for /login and /signup ---
+    // --- Simple routing that works with the static local server ---
     function showLoginSection(pushState = true) {
       document.getElementById('signup-section').style.display = 'none';
       document.getElementById('login-section').style.display = 'block';
-      if (pushState) history.pushState({page: 'login'}, '', '/login');
+      if (pushState) history.pushState({page: 'login'}, '', '/#login');
     }
     function showSignupSection(pushState = true) {
       document.getElementById('login-section').style.display = 'none';
       document.getElementById('signup-section').style.display = 'block';
-      if (pushState) history.pushState({page: 'signup'}, '', '/signup');
+      if (pushState) history.pushState({page: 'signup'}, '', '/#signup');
     }
     window.addEventListener('popstate', function(e) {
-      if (location.pathname === '/signup') {
+      if (location.hash === '#signup') {
         showSignupSection(false);
       } else {
         showLoginSection(false);
       }
     });
-    // On page load, show correct section (ignore trailing slash or hash)
-    if (location.pathname.replace(/\/$/, '') === '/signup') {
+    window.addEventListener('hashchange', function() {
+      if (location.hash === '#signup') {
+        showSignupSection(false);
+      } else {
+        showLoginSection(false);
+      }
+    });
+    // On page load, show the section selected by the hash.
+    if (location.hash === '#signup') {
       showSignupSection(false);
     } else {
       showLoginSection(false);
@@ -935,18 +1282,38 @@ const db = firebase.firestore();
     ['click','keydown','mousemove','scroll','touchstart'].forEach(evt => {
       window.addEventListener(evt, resetSessionOnActivity, true);
     });
-    // Download PDF Report (tabular format)
-    document.getElementById('download-report-btn').onclick = function() {
+    // Build the PDF report for viewing or downloading.
+    function createReportDocument() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      let y = 15;
-      doc.setFontSize(18);
-      doc.text(`M.D Puttur Ganesh festival contribution - ${selectedYear}`, 105, y, { align: 'center' });
-      y += 10;
-      doc.setFontSize(13);
+      const saffron = [217, 119, 6];
+      const teal = [15, 118, 110];
+      const ink = [44, 44, 44];
+      let y = 16;
+      doc.setFillColor(...saffron);
+      doc.roundedRect(12, 10, 186, 25, 3, 3, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(19);
+      doc.setFont(undefined, 'bold');
+      doc.text('M.D Puttur Village', 105, 20, { align: 'center' });
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Ganesh Festival Contributions | ${selectedYear}`, 105, 28, { align: 'center' });
+      doc.setTextColor(...ink);
+      y = 45;
+      const addSectionHeading = (title) => {
+        doc.setFillColor(...teal);
+        doc.roundedRect(14, y - 5, 182, 8, 1.5, 1.5, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.text(title, 18, y + 0.5);
+        doc.setTextColor(...ink);
+        doc.setFont(undefined, 'normal');
+        y += 7;
+      };
       // Donors Table
-      doc.text('Donors', 14, y);
-      y += 4;
+      addSectionHeading('Donors');
       const selectedDonors = donors.filter(d => getRecordYear(d) === selectedYear);
       const selectedExpenses = expenses.filter(e => getRecordYear(e) === selectedYear);
       if (selectedDonors.length > 0) {
@@ -955,8 +1322,9 @@ const db = firebase.firestore();
           head: [['Name', 'Amount']],
           body: selectedDonors.map(d => [d.name, d.amount.toLocaleString('en-IN')]),
           theme: 'grid',
-          headStyles: { fillColor: [255, 224, 178], textColor: [179, 107, 0] },
-          bodyStyles: { textColor: [44, 44, 44] },
+          headStyles: { fillColor: [255, 237, 213], textColor: saffron, fontStyle: 'bold' },
+          bodyStyles: { textColor: ink },
+          alternateRowStyles: { fillColor: [255, 251, 235] },
           margin: { left: 14, right: 14 },
         });
         y = doc.lastAutoTable.finalY + 8;
@@ -967,9 +1335,7 @@ const db = firebase.firestore();
       }
 
       // Special Contributors Table
-      doc.setFontSize(13);
-      doc.text('Special Contributors', 14, y);
-      y += 4;
+      addSectionHeading('Special Contributors');
       const selectedSpecialContributors = specialContributors.filter(s => getRecordYear(s) === selectedYear);
       if (selectedSpecialContributors.length > 0) {
         doc.autoTable({
@@ -977,8 +1343,9 @@ const db = firebase.firestore();
           head: [['Name', 'Description']],
           body: selectedSpecialContributors.map(s => [s.name, s.desc]),
           theme: 'grid',
-          headStyles: { fillColor: [255, 224, 178], textColor: [179, 107, 0] },
-          bodyStyles: { textColor: [44, 44, 44] },
+          headStyles: { fillColor: [255, 237, 213], textColor: saffron, fontStyle: 'bold' },
+          bodyStyles: { textColor: ink },
+          alternateRowStyles: { fillColor: [255, 251, 235] },
           margin: { left: 14, right: 14 },
         });
         y = doc.lastAutoTable.finalY + 8;
@@ -989,17 +1356,16 @@ const db = firebase.firestore();
       }
 
       // Expenses Table
-      doc.setFontSize(13);
-      doc.text('Expenses', 14, y);
-      y += 4;
+      addSectionHeading('Expenses');
       if (selectedExpenses.length > 0) {
         doc.autoTable({
           startY: y,
           head: [['Item', 'Spent By', 'Amount']],
           body: selectedExpenses.map(e => [e.item, e.spentBy, e.amount.toLocaleString('en-IN')]),
           theme: 'grid',
-          headStyles: { fillColor: [255, 224, 178], textColor: [179, 107, 0] },
-          bodyStyles: { textColor: [44, 44, 44] },
+          headStyles: { fillColor: [255, 237, 213], textColor: saffron, fontStyle: 'bold' },
+          bodyStyles: { textColor: ink },
+          alternateRowStyles: { fillColor: [255, 251, 235] },
           margin: { left: 14, right: 14 },
         });
         y = doc.lastAutoTable.finalY + 8;
@@ -1009,39 +1375,74 @@ const db = firebase.firestore();
         y += 14;
       }
       // Summary Table
-      const totalDonated = selectedDonors.reduce((sum, d) => sum + d.amount, 0);
-      const totalSpent = selectedExpenses.reduce((sum, e) => sum + e.amount, 0);
-      const balance = totalDonated - totalSpent;
+      addSectionHeading('Financial Summary');
+      const totalDonated = selectedDonors.reduce((sum, d) => sum + Number(d.amount || 0), 0);
+      const totalSpent = selectedExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+      const carryForwardData = getPreviousYearBalance(selectedYear);
+      const currentCalendarYear = String(new Date().getFullYear());
+      const lastYear = String(Number(currentCalendarYear) - 1);
+      const isLastYear = selectedYear === lastYear;
+      const carryForward = carryForwardData.available
+        ? carryForwardData.balance
+        : isLastYear ? totalDonated - totalSpent : 0;
+      const balance = carryForwardData.available
+        ? carryForward + totalDonated - totalSpent
+        : totalDonated - totalSpent;
       doc.setFontSize(13);
       doc.autoTable({
         startY: y,
-        head: [['Total Donated', 'Total Spent', 'Balance']],
+        head: [[isLastYear ? `Balance to Carry Forward to ${currentCalendarYear}` : 'Carry Forward', 'Total Donated', 'Total Spent', isLastYear ? 'Closing Balance' : 'Current Balance']],
         body: [[
+          (carryForwardData.available || isLastYear) ? carryForward.toLocaleString('en-IN') : '-',
           totalDonated.toLocaleString('en-IN'),
           totalSpent.toLocaleString('en-IN'),
           balance.toLocaleString('en-IN')
         ]],
         theme: 'grid',
-        headStyles: { fillColor: [255, 224, 178], textColor: [179, 107, 0] },
-        bodyStyles: { textColor: [44, 44, 44], fontStyle: 'bold' },
+        headStyles: { fillColor: [204, 251, 241], textColor: teal, fontStyle: 'bold' },
+        bodyStyles: { textColor: ink, fontStyle: 'bold', fontSize: 12 },
+        alternateRowStyles: { fillColor: [240, 253, 250] },
         margin: { left: 14, right: 14 },
       });
-      doc.save('ganesh_festival_report.pdf');
+      doc.setFontSize(9);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Generated on ${new Date().toLocaleDateString('en-IN')} | M.D Puttur Village Ganesh Festival`, 105, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+      return doc;
+    }
+    document.getElementById('view-report-btn').onclick = function() {
+      const reportUrl = createReportDocument().output('bloburl');
+      window.open(reportUrl, '_blank');
+    };
+    document.getElementById('download-report-btn').onclick = function() {
+      createReportDocument().save('ganesh_festival_report.pdf');
     };
   // Editable data
   let donors = [];
   let expenses = [];
   let events = [];
-  let selectedYear = '2025';
+  let selectedYear = String(new Date().getFullYear());
 
   function getRecordYear(record) {
     return String(record.year || '2025');
   }
 
+  function getPreviousYearBalance(year) {
+    const previousYear = String(Number(year) - 1);
+    if (String(year) !== String(new Date().getFullYear())) {
+      return { previousYear, balance: 0, available: false };
+    }
+    const previousYearDonated = donors
+      .filter(donor => getRecordYear(donor) === previousYear)
+      .reduce((sum, donor) => sum + Number(donor.amount || 0), 0);
+    const previousYearSpent = expenses
+      .filter(expense => getRecordYear(expense) === previousYear)
+      .reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+    return { previousYear, balance: previousYearDonated - previousYearSpent, available: true };
+  }
+
   function getAvailableYears() {
-    const currentYear = new Date().getFullYear();
     const years = new Set();
-    for (let year = 2000; year <= currentYear + 1; year++) years.add(String(year));
+    for (let year = 2000; year <= 2040; year++) years.add(String(year));
     years.add(selectedYear);
     donors.forEach(donor => years.add(getRecordYear(donor)));
     expenses.forEach(expense => years.add(getRecordYear(expense)));
@@ -1100,19 +1501,46 @@ db.collection('users').onSnapshot(snapshot => {
   users = [];
   snapshot.forEach(doc => users.push(doc.data()));
 });
-    // Navigation between dashboard and events
+    // Navigation between focused app sections
+    function setActiveTab(tabName) {
+      document.querySelectorAll('.app-tab').forEach(tab => {
+        const isSelected = tab.dataset.tab === tabName;
+        tab.setAttribute('aria-selected', String(isSelected));
+      });
+      document.querySelectorAll('[data-tab-panel]').forEach(panel => {
+        panel.classList.toggle('is-active', panel.dataset.tabPanel === tabName);
+      });
+      const contentColumn = document.querySelector('.workspace-content');
+      if (contentColumn) contentColumn.style.display = tabName === 'gallery' ? 'none' : 'block';
+      if (tabName === 'events') renderEvents();
+    }
+    document.querySelectorAll('.app-tab').forEach(tab => {
+      tab.addEventListener('click', () => setActiveTab(tab.dataset.tab));
+    });
+    document.querySelectorAll('.dashboard-subtab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const selectedPanel = tab.dataset.dashboardTab;
+        const tabHints = {
+          donors: 'Donors: add, search, edit, or remove donor contributions.',
+          special: 'Special Contributors: record and maintain special contributor details.',
+          expenses: 'Expenses: add expenses and manage receipt uploads.',
+          reports: 'Reports: download a PDF summary for the selected year.'
+        };
+        document.querySelectorAll('.dashboard-subtab').forEach(subtab => {
+          subtab.setAttribute('aria-selected', String(subtab.dataset.dashboardTab === selectedPanel));
+        });
+        document.querySelectorAll('[data-dashboard-panel]').forEach(panel => {
+          panel.classList.toggle('is-active', panel.dataset.dashboardPanel === selectedPanel);
+        });
+        const hint = document.getElementById('dashboard-tab-hint');
+        if (hint) hint.textContent = tabHints[selectedPanel] || '';
+      });
+    });
     document.getElementById('show-events').onclick = function() {
-      document.getElementById('dashboard-section').style.display = 'none';
-      document.getElementById('events-section').style.display = 'block';
-      document.getElementById('show-events').style.display = 'none';
-      document.getElementById('show-dashboard').style.display = 'inline-block';
-      renderEvents();
+      setActiveTab('events');
     };
     document.getElementById('show-dashboard').onclick = function() {
-      document.getElementById('dashboard-section').style.display = 'block';
-      document.getElementById('events-section').style.display = 'none';
-      document.getElementById('show-events').style.display = 'inline-block';
-      document.getElementById('show-dashboard').style.display = 'none';
+      setActiveTab('dashboard');
     };
 
     // Add event
@@ -1225,7 +1653,7 @@ db.collection('users').onSnapshot(snapshot => {
       const userDoc = await db.collection('users').doc(docId).get();
       const user = userDoc.exists ? userDoc.data() : null;
       if (user && user.password === password) {
-        currentUser = user;
+        currentUser = { ...user, isAdmin: docId === 'admin' || user.isAdmin === true };
         if (currentUser.isNewUser) {
           db.collection('users').doc(docId).update({ isNewUser: firebase.firestore.FieldValue.delete() });
           delete currentUser.isNewUser;
@@ -1234,6 +1662,7 @@ db.collection('users').onSnapshot(snapshot => {
         document.getElementById('signup-section').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
         render();
+        renderGallery();
         startSessionTimeout();
         updateLogoutBtnVisibility();
       } else {
@@ -1470,7 +1899,7 @@ db.collection('users').onSnapshot(snapshot => {
               `;
             }
             if (isAdmin && !e.editing && !e.receipt) {
-              receiptHtml = `<button class='icon-btn' title='Upload Receipt' onclick='openReceiptModal(${realIdx})'><i class="fa fa-upload"></i> Upload</button>`;
+              receiptHtml = `<button class='icon-btn receipt-upload-btn' title='Upload Receipt' onclick='openReceiptModal(${realIdx})'><i class="fa fa-upload"></i><span>Upload</span></button>`;
             }
           if (isAdmin && e.editing) {
             row.innerHTML = `
@@ -1484,9 +1913,9 @@ db.collection('users').onSnapshot(snapshot => {
               </td>
             `;
           } else if (isAdmin) {
-            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>${receiptHtml}</td><td><button class="icon-btn edit-btn" onclick="editExpense(${realIdx})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${realIdx})"><i class="fa fa-trash"></i></button></td>`;
+            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td class="receipt-cell">${receiptHtml}</td><td><button class="icon-btn edit-btn" onclick="editExpense(${realIdx})"><i class="fa fa-pen-to-square"></i></button> <button class="icon-btn delete-btn" onclick="deleteExpense(${realIdx})"><i class="fa fa-trash"></i></button></td>`;
           } else {
-            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td>${receiptHtml}</td>`;
+            row.innerHTML = `<td>${e.item}</td><td>${e.spentBy}</td><td><span class="amount-badge"><i class="fa fa-indian-rupee-sign"></i> ${e.amount}</span></td><td class="receipt-cell">${receiptHtml}</td>`;
           }
           expensesTbody.appendChild(row);
         });
@@ -1509,14 +1938,43 @@ db.collection('users').onSnapshot(snapshot => {
       render();
     };
       // Calculate totals
-      const totalDonated = selectedDonors.reduce((sum, d) => sum + d.amount, 0);
-      const totalSpent = selectedExpenses.reduce((sum, e) => sum + e.amount, 0);
-      const balance = totalDonated - totalSpent;
+      const totalDonated = selectedDonors.reduce((sum, d) => sum + Number(d.amount || 0), 0);
+      const totalSpent = selectedExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+      const previousYearData = getPreviousYearBalance(selectedYear);
+      const carryForward = previousYearData.balance;
+      const currentCalendarYear = String(new Date().getFullYear());
+      const lastYear = String(Number(currentCalendarYear) - 1);
+      const isLastYear = selectedYear === lastYear;
+      const balance = previousYearData.available
+        ? carryForward + totalDonated - totalSpent
+        : totalDonated - totalSpent;
+      const carryForwardNotice = document.getElementById('carry-forward-notice');
+      carryForwardNotice.style.display = previousYearData.available || isLastYear ? 'block' : 'none';
+      if (previousYearData.available) {
+        carryForwardNotice.textContent = carryForward >= 0
+          ? `Previous year balance (${previousYearData.previousYear}): ₹${carryForward.toLocaleString('en-IN')} carried forward to ${selectedYear}.`
+          : `Previous year deficit (${previousYearData.previousYear}): ₹${Math.abs(carryForward).toLocaleString('en-IN')} deducted from ${selectedYear}.`;
+      } else if (isLastYear) {
+        const nextYear = String(Number(selectedYear) + 1);
+        const closingBalance = totalDonated - totalSpent;
+        carryForwardNotice.textContent = closingBalance >= 0
+          ? `Balance to carry forward to ${nextYear}: ₹${closingBalance.toLocaleString('en-IN')}.`
+          : `Deficit to carry forward to ${nextYear}: ₹${Math.abs(closingBalance).toLocaleString('en-IN')}.`;
+      }
       // Show summary
       document.getElementById('summary').innerHTML = `
-        <b>Total Donated:</b> ₹${totalDonated} &nbsp; | &nbsp;
-        <b>Total Spent:</b> ₹${totalSpent} &nbsp; | &nbsp;
-        <b>Balance:</b> <span class="${balance >= 0 ? 'credit' : 'debt'}">₹${balance}</span>
+        <div class="summary-item">
+          <span class="summary-label">Total Donated</span>
+          <span class="summary-value">₹${totalDonated.toLocaleString('en-IN')}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Total Spent</span>
+          <span class="summary-value">₹${totalSpent.toLocaleString('en-IN')}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">${isLastYear ? 'Balance to Carry Forward' : 'Current Balance'}</span>
+          <span class="summary-value ${balance >= 0 ? 'credit' : 'debt'}">₹${balance.toLocaleString('en-IN')}</span>
+        </div>
       `;
   renderLogoutBtnInMain();
     }
@@ -1624,35 +2082,25 @@ window.addEventListener('storage', function(e) {
   }
 });
     // Add logout button to dashboard/events area for all users
+    function updateLogoutBtnVisibility() {
+      const logoutWrapper = document.getElementById('logout-btn-wrapper');
+      if (logoutWrapper) logoutWrapper.style.display = currentUser ? 'block' : 'none';
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('login-form').reset();
+      document.getElementById('login-error').textContent = 'Logout successfully!';
+      clearSessionTimeout();
+      updateLogoutBtnVisibility();
+    }
+    document.getElementById('logout-btn').onclick = handleLogout;
+
     function renderLogoutBtnInMain() {
-      let dashboardSection = document.getElementById('dashboard-section');
-      let eventsSection = document.getElementById('events-section');
-      // Remove any existing logout buttons
-      let oldBtns = document.querySelectorAll('#logout-btn-main');
-      oldBtns.forEach(btn => btn.remove());
-      if (!currentUser) return;
-      // Create logout button
-      function handleLogout() {
-        currentUser = null;
-        document.getElementById('main-content').style.display = 'none';
-        document.getElementById('signup-section').style.display = 'none';
-        document.getElementById('login-section').style.display = 'block';
-        document.getElementById('login-form').reset();
-        document.getElementById('login-error').textContent = 'Logout successfully!';
-        clearSessionTimeout();
-        updateLogoutBtnVisibility();
-        renderLogoutBtnInMain();
-      }
-      let btn1 = document.createElement('button');
-      btn1.id = 'logout-btn-main';
-      btn1.textContent = 'Logout';
-      btn1.style.cssText = 'background:linear-gradient(90deg,#ffd54f 0%,#ffb300 100%);color:#fff;border:none;border-radius:18px;padding:7px 18px;font-size:0.98em;cursor:pointer;margin:0 0 18px 0;box-shadow:0 2px 6px #e6a13c33;transition:background 0.2s,box-shadow 0.2s,color 0.2s,transform 0.18s cubic-bezier(.4,2,.6,1),filter 0.18s;font-weight:bold;display:block;float:right;z-index:1002;';
-      btn1.onclick = handleLogout;
-      let btn2 = btn1.cloneNode(true);
-      btn2.onclick = handleLogout;
-      // Add to dashboard and events section
-      if (dashboardSection) dashboardSection.insertBefore(btn1, dashboardSection.firstChild);
-      if (eventsSection) eventsSection.insertBefore(btn2, eventsSection.firstChild);
+      updateLogoutBtnVisibility();
     }
   // Ensure admin user exists in Firestore (compat API)
 async function ensureAdminUser() {
